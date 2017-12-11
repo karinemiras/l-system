@@ -2,71 +2,67 @@ body:
   type        : Core
   id          : module0
   children    :
+    3:
+      slot        : 0
+      orientation : 0
+      type        : TouchSensor
+      id          : module0sensor-l
     2:
       slot        : 0
-      orientation : 90
-      type        : ActiveHinge
-      id          : module1
-      children    :
-        1:
-          slot        : 0
-          orientation : -90
-          type        : FixedBrick
-          id          : module2
-          children    :
-            3:
-              slot        : 0
-              orientation : 0
-              type        : TouchSensor
-              id          : module2sensor-l
-            1:
-              slot        : 0
-              orientation : 0
-              type        : TouchSensor
-              id          : module2sensor-f
-            2:
-              slot        : 0
-              orientation : 0
-              type        : ActiveHinge
-              id          : module3
+      orientation : 0
+      type        : TouchSensor
+      id          : module0sensor-r
 brain:
   neurons:
     node1:
       id: node1
-      layer: output
-      part_id: module1
-      type: Oscillator
+      layer: input
+      part_id: module0sensor-l
+      type: Input
     node2:
       id: node2
       layer: input
-      part_id: module2sensor-f
+      part_id: module0sensor-r
       type: Input
-    node3:
-      id: node3
+    node1-2:
+      id: node1-2
       layer: input
-      part_id: module2sensor-l
+      part_id: module0sensor-l
       type: Input
-    node4:
-      id: node4
-      layer: output
-      part_id: module3
-      type: Oscillator
+    node2-2:
+      id: node2-2
+      layer: input
+      part_id: module0sensor-r
+      type: Input
+    node-core1:
+      id: node-core1
+      layer: input
+      part_id: module0
+      type: Input
+    node-core2:
+      id: node-core2
+      layer: input
+      part_id: module0
+      type: Input
+    node-core3:
+      id: node-core3
+      layer: input
+      part_id: module0
+      type: Input
+    node-core4:
+      id: node-core4
+      layer: input
+      part_id: module0
+      type: Input
+    node-core5:
+      id: node-core5
+      layer: input
+      part_id: module0
+      type: Input
+    node-core6:
+      id: node-core6
+      layer: input
+      part_id: module0
+      type: Input
   connections:
-  - dst: node1
-    src: node2
-    weight: -0.012132
-  - dst: node1
-    src: node3
-    weight: 0.808314
-  - dst: node4
-    src: node3
-    weight: 0.463777
   params:
-    node1:
-      amplitude: 2.13275
-      period: 4.52257
-      phase_offset: 6.40271
-    node4:
-      amplitude: 7.58728
-      period: 6.99805
-      phase_offset: 9.58053

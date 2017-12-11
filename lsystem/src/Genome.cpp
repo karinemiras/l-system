@@ -882,8 +882,9 @@ void Genome::convertYamlBrain(std::string _directoryPath)
       std::ofstream::app);
 
   robot_file << "brain:" << std::endl;
-  robot_file << "  neurons:" << std::endl;
 
+  // adds nodes
+  robot_file << "  neurons:" << std::endl;
 
   for (const auto &node : this->dgs.getBrain_nodes())
   {
@@ -900,6 +901,33 @@ void Genome::convertYamlBrain(std::string _directoryPath)
     robot_file << "      type: " << node.second->function << std::endl;
   }
 
+
+  // ## this is a revolve hack: adding loose inputs to core and touch ##
+  // redundant input for touch sensor
+  for (const auto &node : this->dgs.getBrain_nodes())
+  {
+    if (node.second->direction != "")
+    {
+      robot_file << "    node" << node.first << "-2:" << std::endl;
+      robot_file << "      id: node" << node.first<<"-2" << std::endl;
+      robot_file << "      layer: " << node.second->layer << std::endl;
+      robot_file << "      part_id: module" << node.second->id_comp;
+      robot_file << "sensor-" << node.second->direction;
+      robot_file << std::endl;
+      robot_file << "      type: " << node.second->function << std::endl;
+    }
+  }
+  // inputs to core-component
+  for(int i=1; i<=6; i++){
+    robot_file << "    node-core" << i << ":"<<std::endl;
+    robot_file << "      id: node-core" << i << std::endl;
+    robot_file << "      layer: input" << std::endl;
+    robot_file << "      part_id: module0" << std::endl;
+    robot_file << "      type: Input" << std::endl;
+  }
+  // ## this is a revolve hack: adding loose inputs to core and touch ##
+
+  // adds connections
   robot_file << "  connections:" << std::endl;
 
   for (const auto &edge : this->dgs.getBrain_edges())
@@ -934,6 +962,7 @@ void Genome::convertYamlBrain(std::string _directoryPath)
       }
     }
   }
+
   robot_file.close();
 }
 

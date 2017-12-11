@@ -1,5 +1,5 @@
  digraph g{ forcelabels=true;
-1 [label=<1<BR />Oscillator M2<BR /> amplitude: 8.127504<BR /> period: 8.136577<BR /> phase_offset: 4.410897>, shape=box,color=red,style=filled,fontsize=8];
-2[label=<2<BR/>M1>,color="grey",style=filled,fontsize=8];
-2 -> 1[label="-0.534379 ",fontsize="8"];
+1 [label=<1<BR />Oscillator M1<BR /> amplitude: 6.647653<BR /> period: 8.653655<BR /> phase_offset: 2.217355>, shape=box,color=red,style=filled,fontsize=8];
+2 [label=<2<BR />Oscillator M2<BR /> amplitude: 3.013213<BR /> period: 4.835509<BR /> phase_offset: 2.334594>, shape=box,color=red,style=filled,fontsize=8];
+3 [label=<3<BR />Oscillator M3<BR /> amplitude: 3.013213<BR /> period: 4.835509<BR /> phase_offset: 2.334594>, shape=box,color=red,style=filled,fontsize=8];
  }
