@@ -1,0 +1,64 @@
+body:
+  type        : Core
+  id          : module0
+  children    :
+    1:
+      slot        : 0
+      orientation : 0
+      type        : TouchSensor
+      id          : module0sensor-f
+    2:
+      slot        : 0
+      orientation : 90
+      type        : ActiveHinge
+      id          : module1
+      children    :
+        1:
+          slot        : 0
+          orientation : -90
+          type        : FixedBrick
+          id          : module2
+          children    :
+            1:
+              slot        : 0
+              orientation : 0
+              type        : FixedBrick
+              id          : module4
+            2:
+              slot        : 0
+              orientation : 0
+              type        : ActiveHinge
+              id          : module3
+brain:
+  neurons:
+    node1:
+      id: node1
+      layer: output
+      part_id: module1
+      type: Oscillator
+    node2:
+      id: node2
+      layer: input
+      part_id: module0sensor-f
+      type: Input
+    node3:
+      id: node3
+      layer: output
+      part_id: module3
+      type: Oscillator
+  connections:
+  - dst: node1
+    src: node2
+    weight: -0.012132
+  - dst: node3
+    src: node2
+    weight: 0.463777
+  params:
+    node1:
+      amplitude: 2.13275
+      period: 4.52257
+      phase_offset: 6.40271
+    node3:
+      amplitude: 7.58728
+      period: 6.99805
+      phase_offset: 9.58053

@@ -155,10 +155,10 @@ void Genome::build_grammar(
     }
 
     // while a raffled number of components is not achieved
-    // (times group size (6):
-    // brainmove, mountcom, letter, movecom, brainmove, brainchange
+    // (times group size (4):
+    // brainmove, mountcom, letter, movecom
     int groups = dist_1(generator);
-    while (letter_items.size() < (groups * 6))
+    while (letter_items.size() < (groups * 4))
     {
       // raffles a letter to be included
       auto item = LS.getAlphabetIndex()[
@@ -184,15 +184,6 @@ void Genome::build_grammar(
 
         // raffles a moving command to be included
         letter_items.push_back(LS.getMovingCommands()[dist_4(generator)]);
-
-        // raffles another brain move command to be included
-        braincommand = LS.buildBrainCommand(LS.getBrainMoveCommands()[dist_5(generator)]);
-        letter_items.push_back(braincommand);
-
-        // raffles a brain change command to be included
-        braincommand = LS.buildBrainCommand(LS.getBrainChangeCommands()[dist_6(generator)]);
-        letter_items.push_back(braincommand);
-
       }
     }
 
@@ -939,7 +930,7 @@ void Genome::convertYamlBrain(std::string _directoryPath)
       {
         robot_file << "    node" << node.first << ":" << std::endl;
         robot_file << "      bias: " << node.second->bias << std::endl;
-        robot_file << "      gain: 1"<< std::endl;
+        robot_file << "      gain: 1"<< std::endl; // make it evolvable?
       }
     }
   }

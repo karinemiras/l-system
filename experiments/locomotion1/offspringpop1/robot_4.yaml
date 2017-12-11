@@ -1,0 +1,92 @@
+body:
+  type        : Core
+  id          : module0
+  children    :
+    1:
+      slot        : 0
+      orientation : 90
+      type        : ActiveHinge
+      id          : module1
+      children    :
+        1:
+          slot        : 0
+          orientation : -90
+          type        : FixedBrick
+          id          : module2
+          children    :
+            1:
+              slot        : 0
+              orientation : 0
+              type        : ActiveHinge
+              id          : module3
+            2:
+              slot        : 0
+              orientation : 0
+              type        : FixedBrick
+              id          : module4
+              children    :
+                1:
+                  slot        : 0
+                  orientation : 90
+                  type        : ActiveHinge
+                  id          : module6
+                  children    :
+                    1:
+                      slot        : 0
+                      orientation : -90
+                      type        : ActiveHinge
+                      id          : module7
+                2:
+                  slot        : 0
+                  orientation : 0
+                  type        : ActiveHinge
+                  id          : module5
+brain:
+  neurons:
+    node1:
+      id: node1
+      layer: output
+      part_id: module1
+      type: Oscillator
+    node2:
+      id: node2
+      layer: output
+      part_id: module3
+      type: Oscillator
+    node3:
+      id: node3
+      layer: output
+      part_id: module5
+      type: Oscillator
+    node4:
+      id: node4
+      layer: output
+      part_id: module6
+      type: Oscillator
+    node5:
+      id: node5
+      layer: output
+      part_id: module7
+      type: Oscillator
+  connections:
+  params:
+    node1:
+      amplitude: 9.69793
+      period: 3.80656
+      phase_offset: 4.00205
+    node2:
+      amplitude: 5.81271
+      period: 5.60404
+      phase_offset: 6.8996
+    node3:
+      amplitude: 4.31149
+      period: 1.17147
+      phase_offset: 3.39249
+    node4:
+      amplitude: 6.10356
+      period: 6.7027
+      phase_offset: 8.50206
+    node5:
+      amplitude: 3.14261
+      period: 6.58147
+      phase_offset: 4.45274

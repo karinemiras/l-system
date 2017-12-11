@@ -1,0 +1,58 @@
+/Applications/CLion.app/Contents/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/karinemiras/projects/coevolution-revolve/l-system
+-- The C compiler identification is AppleClang 8.1.0.8020042
+-- The CXX compiler identification is AppleClang 8.1.0.8020042
+-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
+-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++
+-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+CMake Warning at /Applications/CLion.app/Contents/bin/cmake/share/cmake-3.7/Modules/FindBoost.cmake:761 (message):
+  Imported targets not available for Boost version 106501
+Call Stack (most recent call first):
+  /Applications/CLion.app/Contents/bin/cmake/share/cmake-3.7/Modules/FindBoost.cmake:865 (_Boost_COMPONENT_DEPENDENCIES)
+  /Applications/CLion.app/Contents/bin/cmake/share/cmake-3.7/Modules/FindBoost.cmake:1454 (_Boost_MISSING_DEPENDENCIES)
+  lsystem/CMakeLists.txt:33 (find_package)
+
+
+-- Boost version: 1.65.1
+-- Found the following Boost libraries:
+--   unit_test_framework
+-- Looking for Q_WS_X11
+-- Looking for Q_WS_X11 - not found
+-- Looking for Q_WS_WIN
+-- Looking for Q_WS_WIN - not found
+-- Looking for Q_WS_QWS
+-- Looking for Q_WS_QWS - not found
+-- Looking for Q_WS_MAC
+-- Looking for Q_WS_MAC - found
+-- Looking for QT_MAC_USE_COCOA
+-- Looking for QT_MAC_USE_COCOA - found
+-- Could NOT find Qt4 (missing:  QT_CORE_INCLUDE_DIR QT_CORE_LIBRARY QT_WIDGETS_INCLUDE_DIR QT_WIDGETS_LIBRARY) (found version "4.8.7")
+CMake Warning at lsystem/CMakeLists.txt:46 (find_package):
+  By not providing "Findmlpack.cmake" in CMAKE_MODULE_PATH this project has
+  asked CMake to find a package configuration file provided by "mlpack", but
+  CMake did not find one.
+
+  Could not find a package configuration file provided by "mlpack" with any
+  of the following names:
+
+    mlpackConfig.cmake
+    mlpack-config.cmake
+
+  Add the installation prefix of "mlpack" to CMAKE_PREFIX_PATH or set
+  "mlpack_DIR" to a directory containing one of the above files.  If "mlpack"
+  provides a separate development package or SDK, be sure it has been
+  installed.
+
+
+-- Found Armadillo: /usr/local/lib/libarmadillo.dylib (found version "8.200.1") 
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/karinemiras/projects/coevolution-revolve/l-system/cmake-build-debug

@@ -11,7 +11,6 @@
 void LSystem::build_brain_functions(){
     brainfunctions.push_back("Simple");
     brainfunctions.push_back("Sigmoid");
-    brainfunctions.push_back("Oscillator");
 }
 
 /**
@@ -125,20 +124,15 @@ std::string LSystem::buildBrainCommand(std::string braincommand)
         // new connection weight
         braincommand += "_"+std::to_string(weight_uni(generator));
         // transfer/activation function
-        auto function = this->brainfunctions[func(generator)];
+        std::string function = "Oscillator";
         braincommand += "|" + function;
 
-        if(function == "Oscillator")
-        {
-          // amplitude
-          braincommand += "|" + std::to_string(weight_uni2(generator));
-          // period
-          braincommand += "|" + std::to_string(weight_uni2(generator));
-          // phase_offset
-          braincommand += "|" + std::to_string(weight_uni2(generator));
-        }else
-          // bias weight
-          braincommand += "|"+std::to_string(weight_uni(generator));
+        // amplitude
+        braincommand += "|" + std::to_string(weight_uni2(generator));
+        // period
+        braincommand += "|" + std::to_string(weight_uni2(generator));
+        // phase_offset
+        braincommand += "|" + std::to_string(weight_uni2(generator));
     }
 
     if(braincommand.substr(0,1) == "S")
@@ -159,18 +153,8 @@ std::string LSystem::buildBrainCommand(std::string braincommand)
         // transfer/activation function
         auto function = this->brainfunctions[func(generator)];
         braincommand += "|" + function;
-
-        if(function == "Oscillator")
-        {
-          // amplitude
-          braincommand += "|" + std::to_string(weight_uni2(generator));
-          // period
-          braincommand += "|" + std::to_string(weight_uni2(generator));
-          // phase_offset
-          braincommand += "|" + std::to_string(weight_uni2(generator));
-        }else
-          // bias weight
-          braincommand += "|" + std::to_string(weight_uni(generator));
+        // bias weight
+        braincommand += "|" + std::to_string(weight_uni(generator));
     }
 
     if(braincommand == "brainperturb")

@@ -1,0 +1,329 @@
+experiment start: Mon Dec 11 15:28:38 2017
+
+---------------- generation 1 ----------------
+---------------- generation 2 ----------------
+ crossover for genome 10 - p1: 0 p2: 8
+AJ1 from parent2
+AJ2 from parent2
+B from parent1
+C from parent1
+ST from parent2
+ crossover for genome 11 - p1: 9 p2: 7
+AJ1 from parent1
+AJ2 from parent2
+B from parent2
+C from parent1
+ST from parent2
+ crossover for genome 12 - p1: 2 p2: 8
+AJ1 from parent2
+AJ2 from parent1
+B from parent2
+C from parent2
+ST from parent1
+ crossover for genome 13 - p1: 9 p2: 8
+AJ1 from parent1
+AJ2 from parent1
+B from parent2
+C from parent2
+ST from parent2
+ crossover for genome 14 - p1: 9 p2: 2
+AJ1 from parent2
+AJ2 from parent1
+B from parent1
+C from parent2
+ST from parent2
+mutation: swap in 10 for B between 3 and 8
+mutation: swap in 11 for B between 8 and 10
+mutation: remove in 12 for AJ2 at 5
+mutation: swap in 13 for B between 9 and 10
+mutation: remove in 14 for AJ1 at 1
+---------------- generation 3 ----------------
+ crossover for genome 15 - p1: 7 p2: 10
+AJ1 from parent1
+AJ2 from parent1
+B from parent2
+C from parent1
+ST from parent2
+ crossover for genome 16 - p1: 8 p2: 10
+AJ1 from parent1
+AJ2 from parent2
+B from parent2
+C from parent2
+ST from parent2
+ crossover for genome 17 - p1: 8 p2: 11
+AJ1 from parent2
+AJ2 from parent1
+B from parent2
+C from parent2
+ST from parent1
+ crossover for genome 18 - p1: 11 p2: 12
+AJ1 from parent2
+AJ2 from parent2
+B from parent1
+C from parent1
+ST from parent2
+ crossover for genome 19 - p1: 11 p2: 8
+AJ1 from parent1
+AJ2 from parent2
+B from parent1
+C from parent2
+ST from parent2
+mutation: swap in 15 for B between 2 and 7
+mutation: remove in 16 for C at 7
+mutation: swap in 17 for B between 9 and 9
+mutation: add mounting command addf in 18 for B at 3
+mutation: swap in 19 for C between 3 and 5
+---------------- generation 4 ----------------
+ crossover for genome 20 - p1: 2 p2: 18
+AJ1 from parent2
+AJ2 from parent2
+B from parent2
+C from parent2
+ST from parent1
+ crossover for genome 21 - p1: 7 p2: 11
+AJ1 from parent1
+AJ2 from parent2
+B from parent2
+C from parent2
+ST from parent1
+ crossover for genome 22 - p1: 8 p2: 7
+AJ1 from parent2
+AJ2 from parent1
+B from parent2
+C from parent2
+ST from parent2
+ crossover for genome 23 - p1: 10 p2: 8
+AJ1 from parent1
+AJ2 from parent1
+B from parent2
+C from parent2
+ST from parent1
+ crossover for genome 24 - p1: 9 p2: 0
+AJ1 from parent1
+AJ2 from parent2
+B from parent1
+C from parent2
+ST from parent2
+mutation: add brain move command brainmoveTTP_1.000000 in 20 for AJ2 at 5
+mutation: remove in 21 for ST at 3
+mutation: swap in 22 for B between 9 and 9
+mutation: remove in 23 for ST at 12
+mutation: remove in 24 for C at 4
+---------------- generation 5 ----------------
+ crossover for genome 25 - p1: 18 p2: 7
+AJ1 from parent2
+AJ2 from parent2
+B from parent2
+C from parent2
+ST from parent1
+ crossover for genome 26 - p1: 2 p2: 9
+AJ1 from parent1
+AJ2 from parent2
+B from parent2
+C from parent2
+ST from parent2
+ crossover for genome 27 - p1: 18 p2: 7
+AJ1 from parent1
+AJ2 from parent1
+B from parent1
+C from parent1
+ST from parent1
+ crossover for genome 28 - p1: 11 p2: 9
+AJ1 from parent2
+AJ2 from parent1
+B from parent2
+C from parent1
+ST from parent2
+ crossover for genome 29 - p1: 21 p2: 9
+AJ1 from parent2
+AJ2 from parent1
+B from parent2
+C from parent2
+ST from parent2
+mutation: remove in 25 for AJ1 at 6
+mutation: add mounting command addr in 26 for C at 2
+mutation: swap in 27 for AJ2 between 2 and 12
+mutation: add brain change command brainedge_0.492028 in 28 for ST at 4
+mutation: add brain change command brainnode_-0.762607|Sigmoid|-0.311315 in 29 for AJ1 at 1
+---------------- generation 6 ----------------
+ crossover for genome 30 - p1: 7 p2: 27
+AJ1 from parent2
+AJ2 from parent1
+B from parent1
+C from parent2
+ST from parent1
+ crossover for genome 31 - p1: 7 p2: 28
+AJ1 from parent2
+AJ2 from parent2
+B from parent1
+C from parent2
+ST from parent1
+ crossover for genome 32 - p1: 20 p2: 18
+AJ1 from parent2
+AJ2 from parent2
+B from parent1
+C from parent2
+ST from parent1
+ crossover for genome 33 - p1: 0 p2: 27
+AJ1 from parent2
+AJ2 from parent2
+B from parent1
+C from parent1
+ST from parent2
+ crossover for genome 34 - p1: 27 p2: 11
+AJ1 from parent2
+AJ2 from parent2
+B from parent1
+C from parent1
+ST from parent1
+mutation: add letter AJ1_-0.549902|Oscillator|2.632116|1.068620|3.022510 in 30 for C at 5
+mutation: add brain change command brainnode_-0.017542|Sigmoid|0.093749 in 31 for AJ1 at 2
+mutation: swap in 32 for C between 7 and 7
+mutation: remove in 33 for ST at 3
+mutation: remove in 34 for B at 10
+---------------- generation 7 ----------------
+ crossover for genome 35 - p1: 7 p2: 18
+AJ1 from parent2
+AJ2 from parent1
+B from parent2
+C from parent2
+ST from parent2
+ crossover for genome 36 - p1: 26 p2: 7
+AJ1 from parent1
+AJ2 from parent1
+B from parent1
+C from parent1
+ST from parent2
+ crossover for genome 37 - p1: 11 p2: 28
+AJ1 from parent2
+AJ2 from parent2
+B from parent2
+C from parent1
+ST from parent2
+ crossover for genome 38 - p1: 20 p2: 18
+AJ1 from parent1
+AJ2 from parent1
+B from parent1
+C from parent2
+ST from parent1
+ crossover for genome 39 - p1: 34 p2: 26
+AJ1 from parent2
+AJ2 from parent2
+B from parent2
+C from parent2
+ST from parent1
+mutation: swap in 35 for C between 4 and 7
+mutation: swap in 36 for AJ2 between 4 and 7
+mutation: add brain move command brainmoveTTS_2.000000|1.000000 in 37 for ST at 0
+mutation: remove in 38 for C at 3
+mutation: swap in 39 for B between 11 and 12
+---------------- generation 8 ----------------
+ crossover for genome 40 - p1: 30 p2: 35
+AJ1 from parent2
+AJ2 from parent1
+B from parent1
+C from parent2
+ST from parent2
+ crossover for genome 41 - p1: 21 p2: 31
+AJ1 from parent1
+AJ2 from parent2
+B from parent2
+C from parent2
+ST from parent1
+ crossover for genome 42 - p1: 35 p2: 18
+AJ1 from parent2
+AJ2 from parent2
+B from parent2
+C from parent2
+ST from parent2
+ crossover for genome 43 - p1: 21 p2: 28
+AJ1 from parent2
+AJ2 from parent2
+B from parent1
+C from parent2
+ST from parent1
+ crossover for genome 44 - p1: 35 p2: 30
+AJ1 from parent1
+AJ2 from parent1
+B from parent1
+C from parent2
+ST from parent1
+mutation: add brain move command brainmoveFTS_1.000000|1.000000 in 40 for ST at 0
+mutation: remove in 41 for ST at 9
+mutation: swap in 42 for ST between 3 and 3
+mutation: swap in 43 for B between 2 and 9
+mutation: remove in 44 for C at 3
+---------------- generation 9 ----------------
+ crossover for genome 45 - p1: 41 p2: 44
+AJ1 from parent1
+AJ2 from parent1
+B from parent1
+C from parent2
+ST from parent1
+ crossover for genome 46 - p1: 44 p2: 42
+AJ1 from parent1
+AJ2 from parent1
+B from parent1
+C from parent2
+ST from parent2
+ crossover for genome 47 - p1: 44 p2: 30
+AJ1 from parent2
+AJ2 from parent1
+B from parent1
+C from parent1
+ST from parent2
+ crossover for genome 48 - p1: 30 p2: 28
+AJ1 from parent1
+AJ2 from parent2
+B from parent2
+C from parent2
+ST from parent2
+ crossover for genome 49 - p1: 44 p2: 30
+AJ1 from parent2
+AJ2 from parent2
+B from parent2
+C from parent2
+ST from parent1
+mutation: remove in 45 for ST at 7
+mutation: add brain change command brainedge_-0.678473 in 46 for C at 4
+mutation: swap in 47 for AJ1 between 8 and 8
+mutation: swap in 48 for AJ2 between 1 and 8
+mutation: remove in 49 for AJ2 at 8
+---------------- generation 10 ----------------
+ crossover for genome 50 - p1: 44 p2: 30
+AJ1 from parent2
+AJ2 from parent1
+B from parent1
+C from parent2
+ST from parent2
+ crossover for genome 51 - p1: 21 p2: 35
+AJ1 from parent1
+AJ2 from parent1
+B from parent1
+C from parent2
+ST from parent1
+ crossover for genome 52 - p1: 46 p2: 47
+AJ1 from parent1
+AJ2 from parent1
+B from parent1
+C from parent1
+ST from parent1
+ crossover for genome 53 - p1: 47 p2: 46
+AJ1 from parent2
+AJ2 from parent1
+B from parent1
+C from parent1
+ST from parent2
+ crossover for genome 54 - p1: 21 p2: 41
+AJ1 from parent1
+AJ2 from parent1
+B from parent1
+C from parent2
+ST from parent2
+mutation: add brain move command brainmoveTTC_1.000000 in 50 for AJ1 at 6
+mutation: add moving command mover in 51 for AJ1 at 10
+mutation: remove in 52 for B at 3
+mutation: remove in 53 for AJ1 at 1
+mutation: add letter AJ2_-0.561790|Oscillator|1.567241|4.275054|5.496277 in 54 for C at 2
+experiment end: Mon Dec 11 15:29:28 2017
+

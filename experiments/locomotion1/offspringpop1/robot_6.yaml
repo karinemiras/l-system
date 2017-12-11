@@ -1,0 +1,43 @@
+body:
+  type        : Core
+  id          : module0
+  children    :
+    1:
+      slot        : 0
+      orientation : 90
+      type        : ActiveHinge
+      id          : module1
+      children    :
+        1:
+          slot        : 0
+          orientation : -90
+          type        : FixedBrick
+          id          : module2
+          children    :
+            2:
+              slot        : 0
+              orientation : 90
+              type        : ActiveHinge
+              id          : module3
+brain:
+  neurons:
+    node1:
+      id: node1
+      layer: output
+      part_id: module1
+      type: Oscillator
+    node2:
+      id: node2
+      layer: output
+      part_id: module3
+      type: Oscillator
+  connections:
+  params:
+    node1:
+      amplitude: 7.54965
+      period: 9.52036
+      phase_offset: 6.93896
+    node2:
+      amplitude: 3.90006
+      period: 4.82507
+      phase_offset: 3.07953
