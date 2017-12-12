@@ -680,25 +680,24 @@ void Evolution::evaluateLocomotion(
     std::vector< Genome > &individuals)
 {
 
+  // saves list of robots and its validits to file to be read by simulator
+  std::ofstream file;
+  std::string path =
+      "../../experiments/" + this->experiment_name +
+      "/offspringpop"+std::to_string(generation)+"/validity_list.txt";
+  file.open(path);
   for (int i = 0;
        i < individuals.size();
        i++)
   {
-    // check validity of the morphology
-    if (individuals[i].getValid() == 1)
-    {
+    file<<individuals[i].getId()<<" "<< individuals[i].getValid() <<std::endl;
+  }
+  file.close();
 
-//      body_spec = get_body_spec(self.conf);
-//      brain_spec = get_brain_spec(self.conf);
-//      missing_body = yaml_to_robot(body_spec, brain_spec, basic_yaml_object);
-
-      individuals[i].updateFitness(1);
-    }
-    else
-    {
-      individuals[i].updateFitness(0);
-    }
-
+  for (int i = 0;
+       i < individuals.size();
+       i++)
+  {
     this->saveHistory(
         generation,
         individuals[i]);
