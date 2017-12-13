@@ -289,6 +289,7 @@ void Genome::generate_final_string(
     this->gs.replaces(this->grammar);
   }
 
+  std::cout<<"genotype :" <<this->getId()<<std::endl;
   this->gs.display_list();
 
   if (export_genomes == 1)
@@ -928,7 +929,8 @@ void Genome::convertYamlBrain(std::string _directoryPath)
   // ## this is a revolve hack: adding loose inputs to core and touch ##
 
   // adds connections
-  robot_file << "  connections:" << std::endl;
+  if (this->dgs.getBrain_edges().size() > 0)
+    robot_file << "  connections:" << std::endl;
 
   for (const auto &edge : this->dgs.getBrain_edges())
   {
@@ -1036,7 +1038,7 @@ void Genome::convertYamlBody(
     spacing2 += "    ";
   }
 
-
+  // parent slot
   if (letter_convertion == "C")
   {
     robot_file << "body:" << std::endl;
@@ -1058,6 +1060,7 @@ void Genome::convertYamlBody(
   { robot_file << spacing2 << "0:" << std::endl; }
 
 
+  // slot and orientation
   if (letter_convertion != "C")
   {
     robot_file << spacing2 << "  slot        : 0" << std::endl;
@@ -1065,13 +1068,54 @@ void Genome::convertYamlBody(
                               + std::to_string(angle) << std::endl;
   }
 
+  // color
+  robot_file << spacing2 << "  params:" << std::endl;
+  if (letter_convertion == "C")
+  {
+    robot_file << spacing2 << "    blue: 0" << std::endl;
+    robot_file << spacing2 << "    green: 1" << std::endl;
+    robot_file << spacing2 << "    red: 1" << std::endl;
+  }
+  if (letter_convertion == "AJ2")
+  {
+    robot_file << spacing2 << "    blue: 0.58" << std::endl;
+    robot_file << spacing2 << "    green: 0.08" << std::endl;
+    robot_file << spacing2 << "    red: 1" << std::endl;
+  }
+
+  if (letter_convertion == "AJ1")
+  {
+    robot_file << spacing2 << "    blue: 0" << std::endl;
+    robot_file << spacing2 << "    green: 0" << std::endl;
+    robot_file << spacing2 << "    red: 0.7" << std::endl;
+  }
+  if (letter_convertion == "B")
+  {
+    robot_file << spacing2 << "    blue: 1" << std::endl;
+    robot_file << spacing2 << "    green: 0" << std::endl;
+    robot_file << spacing2 << "    red: 0" << std::endl;
+  }
+  if (letter_convertion == "ST")
+  {
+    robot_file << spacing2 << "    blue: 0.7" << std::endl;
+    robot_file << spacing2 << "    green: 0.7" << std::endl;
+    robot_file << spacing2 << "    red: 0.7" << std::endl;
+  }
+  if (letter_convertion == "SL")
+  {
+    robot_file << spacing2 << "    blue: 0.5" << std::endl;
+    robot_file << spacing2 << "    green: 0.75" << std::endl;
+    robot_file << spacing2 << "    red: 0.5" << std::endl;
+  }
+
+
+  // type and id
   if (letter_convertion.substr(
       0,
       2) == "AJ")
   {
     letter_convertion = "AJ";
   }
-
 
   robot_file << spacing2 << "  type        : "
                                 "" + letters_convertion[letter_convertion]

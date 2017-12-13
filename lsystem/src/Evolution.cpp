@@ -694,10 +694,38 @@ void Evolution::evaluateLocomotion(
   }
   file.close();
 
+  // simualtes robots
+  std::string call_simulator = "python ../../../tol-revolve/scripts/offline-evolve/start.py "
+                       "@../../../tol-revolve/scripts/offline-evolve/coevolution.conf "
+                       "--generation " +std::to_string(generation)
+                       +" --experiment-name " +this->experiment_name;
+  std::system(call_simulator.c_str());
+
+  // reads resulting fitnesses
+  std::string line;
+  std::ifstream myfile("../../experiments/" + this->experiment_name +
+                "/offspringpop"+std::to_string(generation)+"/fitnesses.txt");
+
+  std::map<std::string, double> fitnesses;
+  while (getline(myfile, line))
+  {
+    std::vector< std::string > tokens;
+    boost::split(tokens, line, boost::is_any_of(" "));
+    fitnesses[tokens[0]] = std::stod(tokens[1]);
+  }
+
+  for(auto i: fitnesses){
+    std::cout<<i.first<<" "<<i.second<<std::endl;
+  }
+
+  // updates fitnesses
   for (int i = 0;
        i < individuals.size();
        i++)
   {
+    if(fitnesses.count(individuals[i].getId()) > 0)
+        individuals[i].updateFitness(fitnesses[
+                                     individuals[i].getId()]);
     this->saveHistory(
         generation,
         individuals[i]);
@@ -996,7 +1024,7 @@ void Evolution::cleanMemory(std::vector< int > index_selected)
         index_selected.end(),
         i) == index_selected.end())
     {
-      std::cout<<"developed genetic-string"<<std::endl;
+      //std::cout<<"developed genetic-string"<<std::endl;
       auto item = this->population[i].getGeneticString().getStart();
       while (item not_eq NULL)
       {
@@ -1017,10 +1045,10 @@ void Evolution::cleanMemory(std::vector< int > index_selected)
 //        }
 //      }
 
-      std::cout<<"decoded genetic-strings"<<std::endl;
+      //std::cout<<"decoded genetic-strings"<<std::endl;
       this->cleanVertex(this->population[i].getDgs().getRoot());
 
-      std::cout<<"scene"<<std::endl;
+      //std::cout<<"scene"<<std::endl;
       QList<QGraphicsItem*> all = this->population[i].getScene()->items();
       for (int i = 0; i < all.size(); i++)
       {

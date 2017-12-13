@@ -5,11 +5,11 @@ k_neighbors 15
 logs_to_file 1
 logs_to_screen 0
 max_comps 100
-mutation_prob 1
+mutation_prob 0.1
 num_generations 10
 num_initial_comp 3
 offspring_prop 0.5
-pop_size 10
+pop_size 30
 prob_add_archive 0.05
 replacement_iterations 3
 show_phenotypes 0

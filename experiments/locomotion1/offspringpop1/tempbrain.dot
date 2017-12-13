@@ -1,17 +1,7 @@
  digraph g{ forcelabels=true;
-1 [label=<1<BR />Oscillator M2<BR /> amplitude: 8.671594<BR /> period: 2.282384<BR /> phase_offset: 2.435585>, shape=box,color=red,style=filled,fontsize=8];
-2[label=<2<BR/>M0>,color="grey",style=filled,fontsize=8];
-3 [label=<3<BR />Oscillator M3<BR /> amplitude: 9.747497<BR /> period: 9.385256<BR /> phase_offset: 5.512496>, shape=box,color=red,style=filled,fontsize=8];
-4 [label=<4<BR />Oscillator M4<BR /> amplitude: 5.485706<BR /> period: 2.597844<BR /> phase_offset: 9.526463>, shape=box,color=red,style=filled,fontsize=8];
-5 [label=<5<BR />Oscillator M5<BR /> amplitude: 9.747497<BR /> period: 9.385256<BR /> phase_offset: 5.512496>, shape=box,color=red,style=filled,fontsize=8];
-6 [label=<6<BR />Oscillator M6<BR /> amplitude: 5.485706<BR /> period: 2.597844<BR /> phase_offset: 9.526463>, shape=box,color=red,style=filled,fontsize=8];
-7 [label=<7<BR />Oscillator M7<BR /> amplitude: 5.918302<BR /> period: 8.173879<BR /> phase_offset: 1.903402>, shape=box,color=red,style=filled,fontsize=8];
-8[label=<8<BR/>M8>,color="grey",style=filled,fontsize=8];
-2 -> 1[label="-0.766693 ",fontsize="8"];
-2 -> 3[label="0.807292 ",fontsize="8"];
-2 -> 4[label="-0.754181 ",fontsize="8"];
-2 -> 5[label="0.807292 ",fontsize="8"];
-2 -> 6[label="-0.754181 ",fontsize="8"];
-2 -> 7[label="-0.83924 ",fontsize="8"];
-8 -> 1[label="-0.766693 ",fontsize="8"];
+1 [label=<1<BR />Oscillator M1<BR /> amplitude: 6.959130<BR /> period: 2.646990<BR /> phase_offset: 2.128429>, shape=box,color=red,style=filled,fontsize=8];
+2 [label=<2<BR />Oscillator M2<BR /> amplitude: 8.513254<BR /> period: 9.497207<BR /> phase_offset: 2.468152>, shape=box,color=red,style=filled,fontsize=8];
+3 [label=<3<BR />Oscillator M3<BR /> amplitude: 4.753778<BR /> period: 3.675635<BR /> phase_offset: 4.254865>, shape=box,color=red,style=filled,fontsize=8];
+4 [label=<4<BR />Oscillator M4<BR /> amplitude: 8.775187<BR /> period: 3.717761<BR /> phase_offset: 5.532383>, shape=box,color=red,style=filled,fontsize=8];
+5 [label=<5<BR />Oscillator M5<BR /> amplitude: 8.775187<BR /> period: 3.717761<BR /> phase_offset: 5.532383>, shape=box,color=red,style=filled,fontsize=8];
  }
