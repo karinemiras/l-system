@@ -698,7 +698,11 @@ void Evolution::evaluateLocomotion(
   std::string call_simulator = "python ../../../tol-revolve/scripts/offline-evolve/start.py "
                        "@../../../tol-revolve/scripts/offline-evolve/coevolution.conf "
                        "--generation " +std::to_string(generation)
-                       +" --experiment-name " +this->experiment_name;
+                       +" --experiment-name " +this->experiment_name
+                       +" --test " + std::to_string((int)this->getParams()["test"])
+                       +" --genome-test " +std::to_string((int)this->getParams()["genome_test"]);
+  //if(this->params["vizualize_simulation"] == 1)
+  //  call_simulator += " --gazebo-cmd gazebo";
   std::system(call_simulator.c_str());
 
   // reads resulting fitnesses
@@ -712,10 +716,6 @@ void Evolution::evaluateLocomotion(
     std::vector< std::string > tokens;
     boost::split(tokens, line, boost::is_any_of(" "));
     fitnesses[tokens[0]] = std::stod(tokens[1]);
-  }
-
-  for(auto i: fitnesses){
-    std::cout<<i.first<<" "<<i.second<<std::endl;
   }
 
   // updates fitnesses

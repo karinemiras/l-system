@@ -1,1 +1,0 @@
-idgenome difference_parent1 difference_parent2 difference_parents
