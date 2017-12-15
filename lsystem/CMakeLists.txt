@@ -43,9 +43,6 @@ find_package(Qt4 COMPONENTS
 
 include_directories(SYSTEM ${MPI_INCLUDE_PATH})
 
-find_package(mlpack)
-
-find_package(armadillo)
 
 # Source subdirectories
 # _____________________________________________________________________________
@@ -53,10 +50,9 @@ find_package(armadillo)
 
 include_directories(include)
 add_subdirectory(src)
-include_directories(../../revolve-simulator)
+#include_directories(../../revolve-simulator)
 
 file(GLOB_RECURSE SOURCES
-        main.cpp
         src/GeneticString.cpp
         src/Genome.cpp
         src/LSystem.cpp
@@ -66,17 +62,23 @@ file(GLOB_RECURSE SOURCES
         src/Measures.cpp
         src/Aux.cpp
         src/Tests.cpp
-        src/Tuning.cpp
         )
 
 # Generate
 # _____________________________________________________________________________
 
-add_executable(lsystem_proto ${SOURCES})
 
-target_link_libraries(lsystem_proto
+add_library(lsystem_proto_lib STATIC ${SOURCES})
+add_executable(lsystem_proto  main.cpp)
+
+target_link_libraries(lsystem_proto_lib
         Qt4::QtGui
-        mlpack
-        armadillo
         yaml-cpp
         )
+
+target_link_libraries(lsystem_proto
+        lsystem_proto_lib
+        Qt4::QtGui
+        yaml-cpp
+        )
+add_subdirectory("python")

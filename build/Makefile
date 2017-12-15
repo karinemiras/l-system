@@ -135,6 +135,19 @@ lsystem_proto/fast:
 .PHONY : lsystem_proto/fast
 
 #=============================================================================
+# Target rules for targets named lsystem_proto_lib
+
+# Build rule for target.
+lsystem_proto_lib: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 lsystem_proto_lib
+.PHONY : lsystem_proto_lib
+
+# fast build rule for target.
+lsystem_proto_lib/fast:
+	$(MAKE) -f lsystem/CMakeFiles/lsystem_proto_lib.dir/build.make lsystem/CMakeFiles/lsystem_proto_lib.dir/build
+.PHONY : lsystem_proto_lib/fast
+
+#=============================================================================
 # Target rules for targets named lsystem_static
 
 # Build rule for target.
@@ -147,6 +160,19 @@ lsystem_static/fast:
 	$(MAKE) -f lsystem/src/CMakeFiles/lsystem_static.dir/build.make lsystem/src/CMakeFiles/lsystem_static.dir/build
 .PHONY : lsystem_static/fast
 
+#=============================================================================
+# Target rules for targets named lsystem_python
+
+# Build rule for target.
+lsystem_python: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 lsystem_python
+.PHONY : lsystem_python
+
+# fast build rule for target.
+lsystem_python/fast:
+	$(MAKE) -f lsystem/python/CMakeFiles/lsystem_python.dir/build.make lsystem/python/CMakeFiles/lsystem_python.dir/build
+.PHONY : lsystem_python/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -157,7 +183,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... test"
 	@echo "... lsystem_proto"
+	@echo "... lsystem_proto_lib"
 	@echo "... lsystem_static"
+	@echo "... lsystem_python"
 .PHONY : help
 
 

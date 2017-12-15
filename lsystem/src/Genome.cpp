@@ -305,8 +305,7 @@ void Genome::exportGenome(std::string dirpath)
 {
 
   std::ofstream genome_file;
-  std::string path =
-      "../../experiments/" + dirpath + "/genome" + this->id + ".txt";
+  std::string path = dirpath + "/genome" + this->id + ".txt";
   genome_file.open(path);
 
   std::map< std::string, GeneticString > grammar = std::map< std::string, GeneticString >();
@@ -439,7 +438,6 @@ void Genome::constructor(
     this->scene->render(&painter);
 
     QString qstr = QString::fromStdString(
-        "../../experiments/" +
         path + "/body_" +
         this->id + "_p1_" +
         this->id_parent1 + "_p2_" +
@@ -448,9 +446,9 @@ void Genome::constructor(
 
     // draw brain graph
     std::string auxcom =
-        "dot -Tpng ../../experiments/" + path + "/tempbrain"
+        "dot -Tpng " + path + "/tempbrain"
             ".dot "
-            "-o ../../experiments/" + path + "/brain_" + this->id +
+            "-o " + path + "/brain_" + this->id +
         ".png";
     std::system(auxcom.c_str());
   }
@@ -876,7 +874,7 @@ void Genome::convertYamlBrain(std::string _directoryPath)
 {
   std::ofstream robot_file;
   auto path =
-      "../../experiments/" + _directoryPath
+       _directoryPath
       + "/robot_" + this->getId() + ".yaml";
   robot_file.open(
       path,
@@ -995,7 +993,7 @@ void Genome::convertYamlBody(
   // slots 0-back 1-front 2-right 3-left
 
   std::ofstream robot_file;
-  std::string path = "../../experiments/" +
+  std::string path =
                      _directoryPath + "/robot_" + this->getId() + ".yaml";
   robot_file.open(
       path,

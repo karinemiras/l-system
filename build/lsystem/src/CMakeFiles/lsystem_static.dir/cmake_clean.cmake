@@ -8,7 +8,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/lsystem_static.dir/LSystem.cpp.o"
   "CMakeFiles/lsystem_static.dir/Measures.cpp.o"
   "CMakeFiles/lsystem_static.dir/Tests.cpp.o"
-  "CMakeFiles/lsystem_static.dir/Tuning.cpp.o"
   "../../lib/liblsystem_static.pdb"
   "../../lib/liblsystem_static.a"
 )

@@ -21,9 +21,13 @@ class Measures{
 
 public:
 
-    Measures(std::string experiment_name, std::map<std::string, double> params){
+    Measures(std::string experiment_name,
+             std::map<std::string, double> params,
+             std::string path)
+    {
         this->experiment_name = experiment_name;
         this->params = params;
+        this->path = path;
     }
 
     void initalizeMeasures();
@@ -50,6 +54,7 @@ private:
     std::map< std::pair<int, int> , double> points = std::map< std::pair<int, int> , double>();
     std::string experiment_name = "";
     std::map<std::string, double> params =  std::map<std::string, double>();
+    std::string path = "";
 
 };
 

@@ -328,7 +328,7 @@ void Measures::measurePhenotype(std::map<std::string, double> params,
 
 
     // #TEST: checks if there is any measure ouy of the expected range
-    Tests tests = Tests(this->experiment_name, this->params);
+    Tests tests = Tests(this->experiment_name, this->params, this->path);
     tests.testMeasures(this->gen->getId(), this->gen->getMeasures());
 
 
@@ -336,11 +336,11 @@ void Measures::measurePhenotype(std::map<std::string, double> params,
 
     std::ofstream measures_file_general;
     std::string path =
-            "../../experiments/" + this->experiment_name + "/measures.txt";
+        this->path+"experiments/" + this->experiment_name + "/measures.txt";
     measures_file_general.open(path, std::ofstream::app);
 
     std::ofstream measures_file;
-    path = "../../experiments/" + this->experiment_name + dirpath +
+    path = this->path+"experiments/" + this->experiment_name + dirpath +
            std::to_string(generation) + "/measures" + this->gen->getId() +
            ".txt";
     measures_file.open(path);

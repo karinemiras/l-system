@@ -30,6 +30,7 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/Users/karinemiras/projects/coevolution-revolve/l-system/build/lsystem/src/cmake_install.cmake")
+  include("/Users/karinemiras/projects/coevolution-revolve/l-system/build/lsystem/python/cmake_install.cmake")
 
 endif()
 

@@ -379,33 +379,6 @@ Tests.cpp.s:
 	cd /Users/karinemiras/projects/coevolution-revolve/l-system/build && $(MAKE) -f lsystem/src/CMakeFiles/lsystem_static.dir/build.make lsystem/src/CMakeFiles/lsystem_static.dir/Tests.cpp.s
 .PHONY : Tests.cpp.s
 
-Tuning.o: Tuning.cpp.o
-
-.PHONY : Tuning.o
-
-# target to build an object file
-Tuning.cpp.o:
-	cd /Users/karinemiras/projects/coevolution-revolve/l-system/build && $(MAKE) -f lsystem/src/CMakeFiles/lsystem_static.dir/build.make lsystem/src/CMakeFiles/lsystem_static.dir/Tuning.cpp.o
-.PHONY : Tuning.cpp.o
-
-Tuning.i: Tuning.cpp.i
-
-.PHONY : Tuning.i
-
-# target to preprocess a source file
-Tuning.cpp.i:
-	cd /Users/karinemiras/projects/coevolution-revolve/l-system/build && $(MAKE) -f lsystem/src/CMakeFiles/lsystem_static.dir/build.make lsystem/src/CMakeFiles/lsystem_static.dir/Tuning.cpp.i
-.PHONY : Tuning.cpp.i
-
-Tuning.s: Tuning.cpp.s
-
-.PHONY : Tuning.s
-
-# target to generate assembly for a file
-Tuning.cpp.s:
-	cd /Users/karinemiras/projects/coevolution-revolve/l-system/build && $(MAKE) -f lsystem/src/CMakeFiles/lsystem_static.dir/build.make lsystem/src/CMakeFiles/lsystem_static.dir/Tuning.cpp.s
-.PHONY : Tuning.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -443,9 +416,6 @@ help:
 	@echo "... Tests.o"
 	@echo "... Tests.i"
 	@echo "... Tests.s"
-	@echo "... Tuning.o"
-	@echo "... Tuning.i"
-	@echo "... Tuning.s"
 .PHONY : help
 
 

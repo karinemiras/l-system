@@ -29,10 +29,8 @@ void DecodedGeneticString::decode(GeneticString gs,
                                   std::map<std::string, double> params,
                                   std::string path)
 {
-
-
     std::ofstream file;
-    file.open("../../experiments/"+ path +"/tempbrain.dot");
+    file.open(path +"/tempbrain.dot");
     file<<" digraph g{ forcelabels=true;"<<std::endl;
     file.close();
 
@@ -350,7 +348,7 @@ void DecodedGeneticString::decode(GeneticString gs,
 
 
     // writes edges to visualization
-    file.open("../../experiments/"+ path +"/tempbrain.dot", std::ofstream::app);
+    file.open(path +"/tempbrain.dot", std::ofstream::app);
     for (const auto &c : this->brain_edges)
     {
         auto origin = c.first.first;
@@ -375,7 +373,7 @@ void DecodedGeneticString::decodeBrainCommand(std::string item,
     if(this->toNode.size() != 0 and this->fromNode.size() != 0 )
     {
         std::ofstream file;
-        file.open("../../experiments/"+ path +"/tempbrain.dot", std::ofstream::app);
+        file.open( path +"/tempbrain.dot", std::ofstream::app);
 
         std::vector<std::string> tokens;
         boost::split(tokens, item,  boost::is_any_of("_"));
@@ -635,7 +633,7 @@ void DecodedGeneticString::decodeBrainNode(std::string direction,
                                            std::string path)
 {
     std::ofstream file;
-    file.open("../../experiments/"+ path +"/tempbrain.dot", std::ofstream::app);
+    file.open(path +"/tempbrain.dot", std::ofstream::app);
 
     std::vector<std::string> tokens;
     boost::split(tokens, item,  boost::is_any_of("_"));

@@ -25,12 +25,10 @@ class  Evolution{
 public:
 
     explicit Evolution(std::string experiment_name,
-                       int new_experiment,
-                       std::string type_experiment){
+                       std::string path){
 
         this->experiment_name = experiment_name;
-        this->new_experiment = new_experiment;
-        this->type_experiment = type_experiment;
+        this->path = path;
 
         this->measures_names.push_back("branching");
         this->measures_names.push_back("connectivity1");
@@ -48,7 +46,7 @@ public:
 
     }
 
-    void saveHistory(int generation, Genome individual);
+    void saveHistory(int generation);
 
     void readParams();
     void testGeneticString(int argc,
@@ -57,23 +55,21 @@ public:
     void measureIndividuals(int generation,
                             std::vector<Genome>  &individuals,
                             std::string dirpath);
-    void evaluateNS(int generation,
-                             std::vector<Genome>  &offspring);
 
     void evaluateLocomotion(int generation,
                      std::vector<Genome >  &individuals);
+    void savesValidity(int generation);
 
     int  tournament();
     void selection();
     std::vector<Genome>  getPopulation();
     std::map<std::string, double> getParams();
-    double runExperiment(int argc, char* argv[]);
+    double runExperiment_part1(int generation);
+    double runExperiment_part2(int generation);
     void exportGenerationMetrics(int generation,
                                  std::vector<int> metrics);
+    void saveFitness(int genome_index, double fitness);
     void exportPop(int generation);
-    void addToArchive( std::vector<Genome>  individuals,
-                       double prob_add_archive,
-                       std::string path);
     void saveParameters();
     void logsTime(std::string moment);
     void setupEvolution();
@@ -82,16 +78,16 @@ public:
     void loadsParams();
     void loadPopulation(int generation);
     void loadArchive();
-    std::vector<int> calculateNicheCoverage(std::vector<Genome>  individuals);
+    std::vector<int> calculateNicheCoverage();
     void createHeader();
     void updateParameter(std::string key, double value);
     void developIndividuals(int argc, char* argv[],
                             LSystem LS,
                             int generation,
                             std::vector<Genome>  &individuals,
-                            std::string path);
+                            std::string dir);
     int loadExperiment();
-    int initExperiment(int argc, char* argv[],
+    void initExperiment(int argc, char* argv[],
                        LSystem LS);
     void summaryNicheCoverage();
     void compareIndividuals(int generation);
@@ -105,8 +101,8 @@ public:
     void cleanVertex(DecodedGeneticString::Vertex * v);
 
     virtual void initPopulation(LSystem LS){};
-    virtual void crossover(LSystem LS, std::vector<Genome> &offspring){};
-    virtual void mutation(LSystem LS, std::vector<Genome> &offspring){};
+    virtual void crossover(LSystem LS){};
+    virtual void mutation(LSystem LS){};
 
 
 
@@ -118,17 +114,11 @@ protected:
     std::map<std::string, double> params =
             std::map<std::string, double>(); // contains the list of parameters loaded from parameter file
 
-    std::map< std::string, Genome >  archive =
-             std::map< std::string , Genome > ();
-
     int next_id = 0; // id that will be given for the next genome to be created
 
     std::string experiment_name = ""; // name for the experiment
 
-    int new_experiment=1; // if state of previous a experiment is being
-    // restored (1) or not (0)
-
-    std::string type_experiment = ""; // name of the type: novelty, locomotion etc
+    std::string path = ""; // path of the lsystem
 
     // points in a grid representing the morphological space
     std::map<std::string, std::vector<double>>
@@ -143,12 +133,19 @@ protected:
             morphological_measures_accumulated =
             std::map<std::string, std::vector<double>>();
 
-    Aux aux = Aux(this->experiment_name, this->getParams()); // contains general auxiliar methos for the experiments
-    Tests tests = Tests(this->experiment_name, this->getParams()); // contains methods with tests for the system
+     // containsgeneral auxiliar methods for the experiments
+    Aux aux = Aux(this->experiment_name,
+                  this->getParams(),
+                  this->path);
+    // contains methods with tests for the system
+    Tests tests = Tests(this->experiment_name,
+                        this->getParams(),
+                        this->path);
 
     std::vector<Genome>  population =  std::vector<Genome>();
     // contains the genomes of all the individuals of the population
-
+    std::vector<Genome>  offspring =  std::vector<Genome>();
+  // contains the genomes of all the individuals the offspring
 
 };
 

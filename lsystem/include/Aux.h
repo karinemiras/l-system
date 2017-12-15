@@ -13,17 +13,22 @@ class Aux{
 
     public:
 
-    Aux(std::string experiment_name, std::map<std::string, double> params){
+    Aux(std::string experiment_name,
+        std::map<std::string, double> params,
+        std::string path)
+    {
         this->params = params;
         this->experiment_name = experiment_name;
+        this->path = path;
     }
 
-        void createFolder(std::string dir);
-        void removeFolder(std::string dir);
-        void logs( std::string message);
-        std::map<std::string, double> params;
-        std::string experiment_name;
+    void createFolder(std::string dir);
+    void removeFolder(std::string dir);
+    void logs( std::string message);
 
+    std::string experiment_name;
+    std::map<std::string, double> params;
+    std::string path;
 };
 
 

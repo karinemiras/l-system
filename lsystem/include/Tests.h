@@ -17,9 +17,13 @@ class Tests{
     public:
 
 
-        Tests(std::string experiment_name, std::map<std::string, double> params){
-            this->params = params;
-            this->experiment_name = experiment_name;
+        Tests(std::string experiment_name,
+              std::map<std::string, double> params,
+              std::string path)
+        {
+                this->params = params;
+                this->experiment_name = experiment_name;
+                this->path = path;
         }
 
         void testMeasures(std::string id_genome, std::map< std::string, double>);
@@ -30,7 +34,11 @@ class Tests{
 
     std::string experiment_name;
     std::map<std::string, double> params;
-    Aux aux = Aux(this->experiment_name, this->params);
+    std::string path;
+
+    Aux aux = Aux(this->experiment_name,
+                  this->params,
+                  this->path);
 };
 
 #endif //LSYSTEM_PROTO_TESTS_H
