@@ -14,6 +14,10 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 
+    EvolutionIndirect evolve_generation = EvolutionIndirect("test","../../");
+    evolve_generation.setupEvolution();
+    evolve_generation.runExperiment_part1(1);
+
     return 0;
 }
 

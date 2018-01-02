@@ -173,14 +173,12 @@ int Evolution::getGeneration_genome(std::string idgenome)
 **/
 void Evolution::exportPop(int generation)
 {
-
   std::ofstream measures_file_general;
   std::string path =
       this->path+"experiments/" + this->experiment_name + "/measures2.txt";
   measures_file_general.open(
       path,
       std::ofstream::app);
-
 
   for (int i = 0;
        i < this->population.size();
@@ -237,7 +235,6 @@ void Evolution::exportPop(int generation)
   }
 
   measures_file_general.close();
-
 }
 
 
@@ -515,66 +512,6 @@ void Evolution::savesValidity(int generation)
   }
   file.close();
 }
-
-/**
- * Evaluates task.
- * @param generation - number of the generation for the evolution
- * @param individuals - population
- * */
-
-//void Evolution::evaluateLocomotion(
-//    int generation,
-//    std::vector< Genome > &individuals)
-//{
-//  // saves list of robots and its validits to file to be read by simulator
-//  std::ofstream file;
-//  std::string path =
-//      this->path+"experiments/" + this->experiment_name +
-//      "/offspringpop"+std::to_string(generation)+"/validity_list.txt";
-//  file.open(path);
-//  for (int i = 0;
-//       i < individuals.size();
-//       i++)
-//  {
-//    file<<individuals[i].getId()<<" "<< individuals[i].getValid() <<std::endl;
-//  }
-//  file.close();
-//
-//  // simualtes robots
-//  std::string call_simulator = "python ../../../tol-revolve/scripts/offline-evolve/start.py "
-//                       "@../../../tol-revolve/scripts/offline-evolve/coevolution.conf "
-//                       "--generation " +std::to_string(generation)
-//                       +" --experiment-name " +this->experiment_name;
-//  //if(this->params["vizualize_simulation"] == 1)
-//  //  call_simulator += " --gazebo-cmd gazebo";
-//  std::system(call_simulator.c_str());
-//
-//  // reads resulting fitnesses
-//  std::string line;
-//  std::ifstream myfile(this->path+"experiments/" + this->experiment_name +
-//                "/offspringpop"+std::to_string(generation)+"/fitnesses.txt");
-//
-//  std::map<std::string, double> fitnesses;
-//  while (getline(myfile, line))
-//  {
-//    std::vector< std::string > tokens;
-//    boost::split(tokens, line, boost::is_any_of(" "));
-//    fitnesses[tokens[0]] = std::stod(tokens[1]);
-//  }
-//
-//  // updates fitnesses
-//  for (int i = 0;
-//       i < individuals.size();
-//       i++)
-//  {
-//    if(fitnesses.count(individuals[i].getId()) > 0)
-//        individuals[i].updateFitness(fitnesses[
-//                                     individuals[i].getId()]);
-//    this->saveHistory(
-//        generation,
-//        individuals[i]);
-//  }
-//}
 
 
 /**
@@ -1142,19 +1079,16 @@ void Evolution::saveFitness(
 double Evolution::runExperiment_part1(
     int generation)
 {
-  int argc;
-  char *argv[] = {nullptr};
+  int argc = 1;
+  char *argv[] = { "a"};
 
   // loads alphabet with letters and commands
   LSystem LS;
 
-  // reads params and prepares experiments directory
-  this->setupEvolution();
-
   this->aux.logs("------------ generation " + std::to_string(generation) + " ------------");
   this->logsTime("start");
 
-  aux.createFolder(this->path+"experiments/"+this->experiment_name +
+  this->aux.createFolder(this->path+"experiments/"+this->experiment_name +
                        "/offspringpop"+std::to_string(generation));
 
   if(generation == 1)
@@ -1167,7 +1101,7 @@ double Evolution::runExperiment_part1(
   else{
 
     this->aux.createFolder(
-        this->experiment_name + "/selectedpop" + std::to_string(generation));
+        this->path+"experiments/"+this->experiment_name + "/selectedpop" + std::to_string(generation));
 
     this->offspring = std::vector< Genome >();
 
@@ -1244,127 +1178,6 @@ double Evolution::runExperiment_part2(int generation)
     this->logsTime("end");
 }
 
-/**
-*  Evolution in the search for novelty.
-**/
-//
-//double Evolution::runExperimentNS(
-//    int argc,
-//    char *argv[])
-//{
-//
-//  this->type_experiment = "novelty";
-//
-//  // loads alphabet with letters and commands
-//  LSystem LS;
-//
-//
-//  int gi = 0; // initial generation
-//
-//  // if experiment is set to start from the beginning
-//  if (this->params["new_experiment"] == 1)
-//  {
-//    gi = this->initExperiment(
-//        argc,
-//        argv,
-//        LS);
-//
-//    // saves metrics of evolution to file
-//    this->exportGenerationMetrics(
-//        gi,
-//        this->calculateNicheCoverage(this->population));
-//
-//    // if experiment is set to continue from previous experiment
-//  }
-//  else
-//  {
-//    gi = this->loadExperiment();
-//  }
-//
-//  // evolves population through out generations
-//  for (int g = gi + 1; g <= this->params["num_generations"]; ++g)
-//  {
-//    this->aux.logs(
-//        "---------------- generation " + std::to_string(g) +
-//        " ----------------");
-//
-//    std::vector< Genome > offspring = std::vector< Genome >();
-//
-//    // creates offspring
-//    this->crossover(LS, offspring);
-//
-//    // mutates new individuals
-//    this->mutation(LS, offspring);
-//
-//    this->aux.createFolder(
-//        this->experiment_name + "/offspringpop" + std::to_string(g));
-//    this->aux.createFolder(
-//        this->experiment_name + "/selectedpop" + std::to_string(g));
-//
-//    // develops genomes of the offspring
-//    this->developIndividuals(
-//        argc,
-//        argv,
-//        LS,
-//        g,
-//        offspring,
-//        this->experiment_name + "/offspringpop");
-//
-//    // measures phenotypes of the offspring
-//    this->measureIndividuals(
-//        g,
-//        offspring,
-//        "/offspringpop");
-//
-//
-//    // evaluates population (parents+offspring)
-//    this->evaluateNS(
-//          g,
-//          offspring);
-// this-> saveshistory
-
-//
-//    // adds new individuals to population
-//    for (int j = 0;
-//         j < offspring.size();
-//         j++)
-//    {
-//      this->population.push_back(offspring[j]);
-//    }
-//
-//    std::vector< int > niche_measures = this->calculateNicheCoverage(offspring);
-//
-//    // selects individuals, keeping the population with a fixed size
-//    this->selection();
-//
-//    // saves metrics of evolution to file
-//    this->exportGenerationMetrics(
-//        g,
-//        niche_measures);
-//
-//    // saves phenotypes of the selected population to a separated folder (only for visualization issues)
-//    this->exportPop(g);
-//
-//
-//    // saves the number of the last generation created/evaluated
-//    this->writesEvolutionState(
-//        g,
-//        this->next_id);
-//
-//
-//  }
-//
-//  this->summaryNicheCoverage();
-//
-//
-//  this->logsTime("end");
-//
-//  return 0.0;
-//
-//
-//}
-
-
 void Evolution::summaryNicheCoverage()
 {
 
@@ -1373,7 +1186,6 @@ void Evolution::summaryNicheCoverage()
   std::string path = this->path+"experiments/" + this->experiment_name +
                      "/morphological_grid_summary.txt";
   file.open(path);
-  file << "point count" << std::endl;
 
   for (const auto &it : this->morphological_grid_accumulated)
   {

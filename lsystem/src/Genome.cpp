@@ -393,7 +393,6 @@ void Genome::constructor(
     std::string path)
 {
 
-
   QApplication app(
       argc,
       argv);
@@ -760,7 +759,6 @@ void Genome::draw_component(
           c2->x,
           c2->y);
       this->list_components[key] = c2->item;
-
 
       // writes the module into yaml file
       this->convertYamlBody(
