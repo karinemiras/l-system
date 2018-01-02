@@ -426,7 +426,8 @@ void Evolution::createHeader()
   path = this->path+"experiments/" + this->experiment_name + "/evolution.txt";
   file.open(path);
   file
-      << "generation maxfitness meanfitness nichecoverage_generation nichecoverage_accumulated";
+      << "generation bestgenome maxfitness meanfitness "
+          "nichecoverage_generation nichecoverage_accumulated";
   for (int i = 0;
        i < this->measures_names.size();
        i++)
@@ -784,6 +785,7 @@ Evolution::exportGenerationMetrics(
       std::ofstream::app);
 
   double maximum_fitness = 0;
+  std::string best_genome = "0";
   double average_fitness = 0;
 
   evolution_file << generation << " ";
@@ -792,12 +794,11 @@ Evolution::exportGenerationMetrics(
        i < this->getPopulation().size();
        i++)
   {
-
-
     if (this->getPopulation()[i].getFitness() >
         maximum_fitness)
     {  // finds the maximum fitness of the population
 
+      best_genome = this->getPopulation()[i].getId();
       maximum_fitness = this->getPopulation()[i].getFitness();
     }
     average_fitness += this->getPopulation()[i].getFitness();  //  sums all fitnesses
@@ -806,7 +807,9 @@ Evolution::exportGenerationMetrics(
 
   average_fitness /= this->getPopulation().size();  // finds the average of the fitnesses
 
-  evolution_file << maximum_fitness << " " << average_fitness;
+  evolution_file << best_genome << " "<<
+                    maximum_fitness << " " <<
+                    average_fitness;
   for (const auto &m : metrics)
   {
     evolution_file << " " << m;
