@@ -64,11 +64,11 @@ public:
     void selection();
     std::vector<Genome>  getPopulation();
     std::map<std::string, double> getParams();
-    double runExperiment_part1(int generation);
+    double runExperiment_part1(int generation, int new_experiment);
     double runExperiment_part2(int generation);
     void exportGenerationMetrics(int generation,
                                  std::vector<int> metrics);
-    void saveFitness(int genome_index, double fitness);
+    void saveFitness(std::string genome_id, double fitness);
     void exportPop(int generation);
     void saveParameters();
     void logsTime(std::string moment);

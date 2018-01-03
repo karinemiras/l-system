@@ -48,15 +48,12 @@ void Evolution::readParams()
   *    replacement_iterations - number of replacement iterations for the l-system
   *    size_component - size of each component in pixels
   *    spacing - spacing between components in pixels
-  *    num_generations - number of generations of the evolution
   *    mutation_prob - probability of adding/removing/swaping items (letters/commands) to the genetic-string in the mutation
   *    max_comps - maximum number of components allowed per phenotype
   *    prob_add_archive - probability of adding any genome to the archive
   *    grid_bins - number of bins to break morphological space
   *    logs_to_screen - if exports the logs to the screen (1) or not (0)
   *    logs_to_file - if exports logs to a file (1) or not (0)
-  *    vizualize_simulation - if gazebo will be open during simulation (1) or not (0)
-  *    new_experiment - if it is a new experiment (1) or a restore (0)
   */
 
   if (myfile.is_open())
@@ -78,10 +75,7 @@ void Evolution::readParams()
     }
     myfile.close();
   }
-  else
-  {
-    this->aux.logs("Unable to open parameters file.");
-  }
+
 }
 
 /*
@@ -638,12 +632,7 @@ int Evolution::tournament()
   int genome1 = dist_1(generator); // random genome 1
   int genome2 = dist_1(generator); // random genome 2
 
-  //random selection test
-  //  return dist_1(generator);
-
-
-  // return the genome with higher fitness / novelty search
-
+  // return the genome with higher fitness
   if (this->population[genome1].getFitness() >
       this->population[genome2].getFitness())
   {
@@ -714,7 +703,6 @@ void Evolution::cleanMemory(std::vector< int > index_selected)
         index_selected.end(),
         i) == index_selected.end())
     {
-      //std::cout<<"developed genetic-string"<<std::endl;
       auto item = this->population[i].getGeneticString().getStart();
       while (item not_eq NULL)
       {
@@ -735,19 +723,18 @@ void Evolution::cleanMemory(std::vector< int > index_selected)
 //        }
 //      }
 
-      //std::cout<<"decoded genetic-strings"<<std::endl;
       this->cleanVertex(this->population[i].getDgs().getRoot());
 
-      //std::cout<<"scene"<<std::endl;
-      QList<QGraphicsItem*> all = this->population[i].getScene()->items();
-      for (int i = 0; i < all.size(); i++)
+      if(this->population[i].getScene() != NULL)
       {
-        QGraphicsItem *gi = all[i];
-        if(gi->parentItem()==NULL) delete gi;
+        QList< QGraphicsItem * > all = this->population[i].getScene()->items();
+        for (int i = 0; i < all.size(); i++)
+        {
+          QGraphicsItem *gi = all[i];
+          if (gi->parentItem() == NULL) delete gi;
+        }
+        delete this->population[i].getScene();
       }
-      delete this->population[i].getScene();
-
-
     }
   }
   std::cout<<"FINISH cleaning memory for non-selected individuals"<<std::endl;
@@ -822,10 +809,6 @@ Evolution::exportGenerationMetrics(
 
 void Evolution::setupEvolution()
 {
-  this->aux = Aux(
-      this->experiment_name,
-      this->getParams(),
-      this->path);
 
   this->readParams();
 
@@ -871,7 +854,6 @@ void Evolution::developIndividuals(
 
 /**
  * Loads population of genomes from files, from previous experiment.
- * @param LS - Lsystem structure containing the alphabet.
  **/
 void Evolution::loadPopulation(int generation)
 {
@@ -920,25 +902,9 @@ void Evolution::loadPopulation(int generation)
         -1);
 
     // finds number of generation to which the genome belongs to
-    int generation_genome = 0;
-    int offspring_size =
-        this->params["pop_size"] * this->params["offspring_prop"];
-    if (this->params["offspring_prop"] == 1)
-    {
-      generation_genome = (int) trunc(
-          std::stoi(idgenome)
-          / this->params["pop_size"]) + 1;
-    }
-    else
-    {
-      generation_genome =
-          (int) trunc((std::stoi(idgenome) - offspring_size)
-                      / offspring_size) + 1;
-    }
+    int generation_genome = this->getGeneration_genome(idgenome);
 
-    if (generation_genome == 0)
-    { generation_genome = 1; }
-
+    // reads the file with the genome
     std::ifstream listalphabet(
         this->path+"experiments/" + this->experiment_name + "/offspringpop" +
         std::to_string(generation_genome) + "/genome" + idgenome +
@@ -974,6 +940,7 @@ void Evolution::loadPopulation(int generation)
 
     }
 
+    // reads the measures of the genome
     std::ifstream listmeasures(
         this->path+"experiments/" + this->experiment_name + "/offspringpop" +
         std::to_string(generation_genome) + "/measures" + idgenome +
@@ -996,11 +963,27 @@ void Evolution::loadPopulation(int generation)
           std::stod(tokens[1]));
     }
 
-    this->population.push_back(gen);  // adds genome to the population
+    // reads fitness of the genome
+    std::ifstream fitness(
+        this->path+"experiments/" + this->experiment_name + "/offspringpop" +
+        std::to_string(generation_genome) + "/fitness" + idgenome +
+        ".txt");
+    if (fitness.is_open())
+    {
+      std::string linefitness;
+      getline(
+          fitness,
+          linefitness);
+      gen.updateFitness(std::stod(linefitness));
+    }
+    std::cout<<"here";
+    std::cout<<gen.getId()<<" ";
+    std::cout<<gen.getFitness();
+
+    // adds genome to the population
+    this->population.push_back(gen);
 
   }
-
-
 };
 
 /**
@@ -1009,15 +992,10 @@ void Evolution::loadPopulation(int generation)
 int Evolution::loadExperiment()
 {
 
-  this->logsTime("start");
+  this->logsTime("start recovery gen");
 
   // loads state of parameters from previous experiment
   this->loadsParams();
-  this->aux = Aux(
-      this->experiment_name,
-      this->getParams(),
-      this->path);
-
 
   // loads generation number from previous  experiment
   int gi = std::stoi(this->readsEvolutionState()[0]);
@@ -1068,10 +1046,25 @@ int Evolution::loadExperiment()
 /* Saves the fitness for genome after simulation.
  * */
 void Evolution::saveFitness(
-    int genome_index,
+    std::string genome_id,
     double fitness)
 {
-  this->offspring[genome_index].updateFitness(fitness);
+  int index=0;
+  while(this->offspring[index].getId() != genome_id)
+    index++;
+  this->offspring[index].updateFitness(fitness);
+
+  int generation_genome = this->getGeneration_genome(this->offspring[index].getId());
+
+  std::ofstream file;
+  std::string path2 =
+      this->path+"experiments/"
+      + this->experiment_name + "/offspringpop" +
+      std::to_string(generation_genome)+ "/fitness"+this->offspring[index].getId()+".txt";
+  file.open(path2);
+  file
+      << this->offspring[index].getFitness();
+  file.close();
 }
 
 
@@ -1080,16 +1073,26 @@ void Evolution::saveFitness(
 *  Evolution in the search for locomotion - part 1 of the process.
 **/
 double Evolution::runExperiment_part1(
-    int generation)
+    int generation, int new_experiment)
 {
   int argc = 1;
-  char *argv[] = { "a"};
+  char *argv[] = {"a"};
 
   // loads alphabet with letters and commands
   LSystem LS;
 
+  this->aux = Aux(
+      this->experiment_name,
+      this->getParams(),
+      this->path);
+
+  if(new_experiment == 0)
+  {
+    this->loadExperiment();
+  }
+
   this->aux.logs("------------ generation " + std::to_string(generation) + " ------------");
-  this->logsTime("start");
+  this->logsTime("start gen");
 
   this->aux.createFolder(this->path+"experiments/"+this->experiment_name +
                        "/offspringpop"+std::to_string(generation));
@@ -1170,15 +1173,14 @@ double Evolution::runExperiment_part2(int generation)
         generation,
         niche_measures);
 
+    this->summaryNicheCoverage();
+
     // saves the number of the last generation created/evaluated
     this->writesEvolutionState(
         generation,
         this->next_id);
 
-    this->summaryNicheCoverage();
-
-
-    this->logsTime("end");
+    this->logsTime("end gen");
 }
 
 void Evolution::summaryNicheCoverage()
@@ -1246,7 +1248,7 @@ void Evolution::logsTime(std::string moment)
 }
 
 /*
- * Logs the generation from which the recovered evolution should start from.
+ * Logs a reference of generation and genome for evolution to be recovered.
  * */
 void Evolution::writesEvolutionState(
     int generation,
