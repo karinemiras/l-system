@@ -118,9 +118,11 @@ public:
 
     void updateMeasure(std::string key, double value);
 
-    void calculateFitness(int k_neighboards);
+    double getLocomotionFitness();
 
-    double getFitness();
+    double getNoveltyFitness();
+
+    double getFinalFitness();
 
     std::map< std::string, GeneticString  > getGrammar();
 
@@ -128,7 +130,11 @@ public:
 
     void removeMeasure(std::string key);
 
-    void updateFitness(double fitness);
+    void updateLocomotionFitness(double fitness);
+
+    void updateNoveltyFitness(double fitness);
+
+    void updateFinalFitness(double fitness);
 
     void addLetterGrammar(std::string letter,
                           GeneticString  lgs);
@@ -163,11 +169,15 @@ protected:
 
     double fit_parent2;  // fit of parent2 of genome
 
-    double fitness = 0; // fitness of the genome
+    double locomotion_fitness = 0;
+
+    double novelty_fitness = 0;
+
+    double final_fitness = 0;
 
     int valid = 1; // valid 1=yes, 0=no
 
-    GeneticString  gs =  GeneticString(); //
+    GeneticString  gs =  GeneticString();
 
     DecodedGeneticString dgs; // graph that logically represents the connections among the components forming the body
 

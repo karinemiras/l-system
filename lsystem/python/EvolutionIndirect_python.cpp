@@ -29,7 +29,7 @@ BOOST_PYTHON_MODULE (lsystem_python)
            &EvolutionIndirect_python::runExperiment_part1)
       .def("runExperiment_part2",
            &EvolutionIndirect_python::runExperiment_part2)
-      .def("saveFitness",
-           &EvolutionIndirect_python::saveFitness)
+      .def("saveLocomotionFitness",
+           &EvolutionIndirect_python::saveLocomotionFitness)
       ;
 }

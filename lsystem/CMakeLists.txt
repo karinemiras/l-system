@@ -43,6 +43,9 @@ find_package(Qt4 COMPONENTS
 
 include_directories(SYSTEM ${MPI_INCLUDE_PATH})
 
+find_package(mlpack)
+
+find_package(armadillo)
 
 # Source subdirectories
 # _____________________________________________________________________________
@@ -50,7 +53,7 @@ include_directories(SYSTEM ${MPI_INCLUDE_PATH})
 
 include_directories(include)
 add_subdirectory(src)
-#include_directories(../../revolve-simulator)
+
 
 file(GLOB_RECURSE SOURCES
         src/GeneticString.cpp
@@ -79,6 +82,8 @@ target_link_libraries(lsystem_proto_lib
 target_link_libraries(lsystem_proto
         lsystem_proto_lib
         Qt4::QtGui
+        mlpack
+        armadillo
         yaml-cpp
         )
 add_subdirectory("python")

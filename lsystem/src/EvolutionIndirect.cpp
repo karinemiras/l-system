@@ -87,8 +87,8 @@ void EvolutionIndirect::crossover(
     Genome gen = Genome(std::to_string(this->next_id),
                         this->population[parent1].getId(),
                         this->population[parent2].getId(),
-                        this->population[parent1].getFitness(),
-                        this->population[parent2].getFitness());
+                        this->population[parent1].getFinalFitness(),
+                        this->population[parent2].getFinalFitness());
 
     this->aux.logs(" crossover for genome " + std::to_string(this->next_id)
                    + " - p1: " + this->population[parent1].getId()

@@ -64,11 +64,11 @@ public:
     void selection();
     std::vector<Genome>  getPopulation();
     std::map<std::string, double> getParams();
-    double runExperiment_part1(int generation, int new_experiment);
+    double runExperiment_part1(int generation, int load_experiment);
     double runExperiment_part2(int generation);
     void exportGenerationMetrics(int generation,
                                  std::vector<int> metrics);
-    void saveFitness(std::string genome_id, double fitness);
+    void saveLocomotionFitness(std::string genome_id, double fitness);
     void exportPop(int generation);
     void saveParameters();
     void logsTime(std::string moment);
@@ -76,8 +76,7 @@ public:
     void writesEvolutionState(int generation, int next_id);
     std::vector<std::string> readsEvolutionState();
     void loadsParams();
-    void loadPopulation(int generation);
-    void loadArchive();
+    void loadIndividuals(int generation, std::string type);
     std::vector<int> calculateNicheCoverage();
     void createHeader();
     void updateParameter(std::string key, double value);
@@ -96,7 +95,7 @@ public:
                              std::string idgenome);
     double compareParents(std::string idparent1,
                           std::string idparent2);
-
+    void  addToArchive();
     void cleanMemory(std::vector< int > index_selected);
     void cleanVertex(DecodedGeneticString::Vertex * v);
 
@@ -134,18 +133,20 @@ protected:
             std::map<std::string, std::vector<double>>();
 
      // containsgeneral auxiliar methods for the experiments
-    Aux aux = Aux(this->experiment_name,
-                  this->getParams(),
-                  this->path);
+    Aux aux = Aux(this->experiment_name,this->getParams(),this->path);
     // contains methods with tests for the system
     Tests tests = Tests(this->experiment_name,
                         this->getParams(),
                         this->path);
 
+    // contains the genomes of all the individuals of the current population
     std::vector<Genome>  population =  std::vector<Genome>();
-    // contains the genomes of all the individuals of the population
+
+    // contains the genomes of all the individuals the new offspring
     std::vector<Genome>  offspring =  std::vector<Genome>();
-  // contains the genomes of all the individuals the offspring
+
+    // contains the genomes of all individuals in the archive
+    std::vector<Genome>  archive = std::vector<Genome> ();
 
 };
 

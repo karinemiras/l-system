@@ -13,10 +13,20 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-
     EvolutionIndirect evolve_generation = EvolutionIndirect("test","../../");
-    evolve_generation.setupEvolution();
-    evolve_generation.runExperiment_part1(1, 1);
+
+    /* test setup */
+      evolve_generation.setupEvolution();
+      int load_generation = 0;//0;
+      int ini = 1;
+    /* test setup */
+
+    for(int i=ini; i <= 10; i++)
+    {
+        evolve_generation.runExperiment_part1(i, load_generation);
+        evolve_generation.runExperiment_part2(i);
+        load_generation = 0;
+    }
 
     return 0;
 }

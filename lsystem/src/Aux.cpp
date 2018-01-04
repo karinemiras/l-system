@@ -21,9 +21,7 @@ void Aux::createFolder(std::string dir) {
 
 void Aux::removeFolder(std::string dir) {
 
-    std::string pathdir =  this->path+"experiments/"+dir;
-    system(("exec rm -r "+pathdir).c_str());
-
+    system(("exec rm -r "+dir).c_str());
 }
 
 
@@ -38,7 +36,7 @@ void Aux::logs(std::string message)
     {
         std::ofstream logs_file;
         std::string path = this->path+ "experiments/"+this->experiment_name
-                           +"/logs.txt";
+                           +"/cross-mut_log.txt";
 
         logs_file.open(path, std::ofstream::app);
 

@@ -94,9 +94,20 @@ void Genome::setGrammar(
   this->grammar = grammar;
 }
 
-double Genome::getFitness()
+double Genome::getLocomotionFitness()
 {
-  return this->fitness;
+  return this->locomotion_fitness;
+}
+
+double Genome::getNoveltyFitness()
+{
+  return this->novelty_fitness;
+}
+
+
+double Genome::getFinalFitness()
+{
+  return this->final_fitness;
 }
 
 /**
@@ -1207,9 +1218,21 @@ void Genome::developGenomeIndirect(
 }
 
 
-void Genome::updateFitness(double fitness)
+void Genome::updateLocomotionFitness(double fitness)
 {
-  this->fitness = fitness;
+  this->locomotion_fitness = fitness;
+}
+
+
+void Genome::updateNoveltyFitness(double fitness)
+{
+  this->novelty_fitness = fitness;
+}
+
+
+void Genome::updateFinalFitness(double fitness)
+{
+  this->final_fitness = fitness;
 }
 
 
