@@ -300,9 +300,13 @@ void Measures::measurePhenotype(std::map<std::string, double> params,
                              this->gen->getMeasures()["total_components"] /
                              params["max_comps"]);
 
-    this->gen->updateMeasure("sensors",
-                                 this->gen->getMeasures()["sensors"]
-                                 / this->gen->getMeasures()["sensors_slots"]);
+    if(this->gen->getMeasures()["sensors_slots"]>0)
+    {
+        this->gen->updateMeasure(
+            "sensors",
+            this->gen->getMeasures()["sensors"]
+            / this->gen->getMeasures()["sensors_slots"]);
+    }
 
 
     /* END:  calculating measures  */
