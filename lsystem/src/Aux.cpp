@@ -36,7 +36,7 @@ void Aux::logs(std::string message)
     {
         std::ofstream logs_file;
         std::string path = this->path+ "experiments/"+this->experiment_name
-                           +"/cross-mut_log.txt";
+                           +"/log.txt";
 
         logs_file.open(path, std::ofstream::app);
 

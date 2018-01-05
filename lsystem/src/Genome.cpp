@@ -41,16 +41,6 @@ std::string Genome::getId_parent2()
   return this->id_parent2;
 }
 
-double Genome::getFit_parent1()
-{
-  return this->fit_parent1;
-}
-
-double Genome::getFit_parent2()
-{
-  return this->fit_parent2;
-}
-
 DecodedGeneticString Genome::getDgs()
 {
   return this->dgs;

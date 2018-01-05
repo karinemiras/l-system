@@ -76,6 +76,8 @@ add_executable(lsystem_proto  main.cpp)
 
 target_link_libraries(lsystem_proto_lib
         Qt4::QtGui
+        mlpack
+        armadillo
         yaml-cpp
         )
 

@@ -38,9 +38,7 @@ void EvolutionIndirect::initPopulation(LSystem LS)
     // initial genomes receive personal ids, but the ids of the parents are none
     Genome gen = Genome(std::to_string(this->next_id),
                         "N",
-                        "N",
-                        -1,
-                        -1);
+                        "N");
 
 
     // creates genetic-strings for the production rules of the letters in the grammar (initial random rules)
@@ -86,9 +84,7 @@ void EvolutionIndirect::crossover(
     // creates new offspring genome
     Genome gen = Genome(std::to_string(this->next_id),
                         this->population[parent1].getId(),
-                        this->population[parent2].getId(),
-                        this->population[parent1].getFinalFitness(),
-                        this->population[parent2].getFinalFitness());
+                        this->population[parent2].getId());
 
     this->aux.logs(" crossover for genome " + std::to_string(this->next_id)
                    + " - p1: " + this->population[parent1].getId()

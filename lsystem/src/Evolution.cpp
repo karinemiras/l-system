@@ -342,7 +342,7 @@ void Evolution::measureIndividuals(
 
   std::ofstream differences_file;
   std::string path =
-      this->path+"experiments/" + this->experiment_name + "/differences.txt";
+      this->path+"experiments/" + this->experiment_name + "/distances.txt";
   differences_file.open(
       path,
       std::ofstream::app);
@@ -413,17 +413,16 @@ void Evolution::createHeader()
       this->path+"experiments/" + this->experiment_name + "/history.txt";
   file.open(path);
   file
-      << "generation idgenome finalfit noveltyfit locofit idparent1 fitparent1 "
-          "idparent2 "
-          "fitparent2 meandiffit"
+      << "generation idgenome noveltyfit locofit finalfit idparent1 idparent2 "
       << std::endl;
   file.close();
 
   path = this->path+"experiments/" + this->experiment_name + "/evolution.txt";
   file.open(path);
   file
-      << "generation bestgenome maxfitness meanfitness "
-          "nichecoverage_generation nichecoverage_accumulated";
+      << "generation idbest_nov maxfit_nov meanfit_nov idbest_loco "
+          "maxfit_loco meanfit_loco idbest_fin maxfit_fin meanfit_fin "
+          "nichecoverage";
   for (int i = 0;
        i < this->measures_names.size();
        i++)
@@ -463,7 +462,7 @@ void Evolution::saveHistory(int generation)
 {
 
   for (int i = 0;
-       i < this->offspring.size();
+       i < this->population.size();
        i++)
   {
 
@@ -475,19 +474,12 @@ void Evolution::saveHistory(int generation)
         std::ofstream::app);
 
     history_file << std::to_string(generation) << " "     // generation
-                 << this->offspring[i].getId() << " "   // idgenome
-                 << this->offspring[i].getFinalFitness() << " "
-                 << this->offspring[i].getNoveltyFitness() << " "
-                 << this->offspring[i].getLocomotionFitness() << " "
-                 << this->offspring[i].getId_parent1() << " "  // id of parent1
-                 << this->offspring[i].getFit_parent1() << " "  // finalfitness ofparent1
-                 << this->offspring[i].getId_parent2() << " " // id of parent2
-                 << this->offspring[i].getFit_parent2() << " " //finalfitness of parent2
-                 << (this->offspring[i].getFinalFitness() - this->offspring[i]
-                                                            .getFit_parent1())
-                    + (this->offspring[i].getFinalFitness() - this->offspring[i]
-                                                                                  .getFit_parent2())
-                      / (float) 2// mean dif fitness from parents
+                 << this->population[i].getId() << " "   // idgenome
+                 << this->population[i].getNoveltyFitness() << " "
+                 << this->population[i].getLocomotionFitness() << " "
+                 << this->population[i].getFinalFitness() << " "
+                 << this->population[i].getId_parent1() << " "  // id of parent1
+                 << this->population[i].getId_parent2() << " " // id of parent2
                  << std::endl;
 
     history_file.close();
@@ -512,111 +504,6 @@ void Evolution::savesValidity(int generation)
          << std::endl;
   }
   file.close();
-}
-
-
-/**
- * Compares average distance among points inthe accumulaetd grid.
- */
-
-void Evolution::compareIndividuals(int generation)
-{
-
-  std::ofstream file;
-  std::string path = this->path+"experiments/" + this->experiment_name +
-                     "/nichecoverage_distances.txt";
-  file.open(
-      path,
-      std::ofstream::app);
-
-
-  // fetches points with its dimensions
-  std::vector< std::vector< double>> points;
-  for (const auto &it : this->morphological_grid_accumulated)
-  {
-
-    std::vector< double > dimensions;
-
-    std::vector< std::string > tokens;
-    boost::split(
-        tokens,
-        it.first,
-        boost::is_any_of("|"));
-    std::vector< std::string > tokens2(
-        tokens.begin(),
-        tokens.begin() + tokens.size() - 1);
-
-    for (int i = 0;
-         i < tokens2.size();
-         i++)
-    {
-      dimensions.push_back(
-          std::stod(tokens2[i]) / this->params["grid_bins"]);
-    }
-    points.push_back(dimensions);
-  }
-
-
-  double avgdistance = 0;
-  std::vector< double > avgdistance_points;
-  double stddev_distance = 0;
-
-  // for each point
-  for (int i = 0;
-       i < points.size();
-       i++)
-  {
-
-    double avgdistance_point = 0;
-    // compare to every other point
-    for (int j = 0;
-         j < points.size();
-         j++)
-    {
-
-      // for each dimension
-      double distance = 0;
-      for (int d = 0;
-           d < this->population[0].getMeasures().size();
-           d++)
-      {
-
-        distance += std::pow(
-            points[i][d] - points[j][d],
-            2);
-      }
-      // euclidean distance
-      distance = std::sqrt(distance);
-
-      avgdistance_point += distance;
-    }
-    // average distance from the point to all others
-    avgdistance_point /= (points.size() - 1);
-
-    avgdistance_points.push_back(avgdistance_point);
-    avgdistance += avgdistance_point;
-  }
-
-  // average distance of all points
-  avgdistance /= points.size();
-
-  for (int i = 0;
-       i < avgdistance_points.size();
-       i++)
-  {
-    stddev_distance += std::pow(
-        avgdistance - avgdistance_points[i],
-        2);
-  }
-  stddev_distance = std::sqrt(stddev_distance);
-
-
-  file << generation << " " << avgdistance << " " << stddev_distance
-       << std::endl;
-
-
-  file.close();
-
 }
 
 
@@ -763,13 +650,10 @@ void Evolution::cleanVertex(DecodedGeneticString::Vertex * v){
  *  Saves state of the generations to file.
  */
 
-void
-Evolution::exportGenerationMetrics(
+void Evolution::exportGenerationMetrics(
     int generation,
     std::vector< int > metrics)
 {
-
-
   std::ofstream evolution_file;
   std::string path =
       this->path+"experiments/" + this->experiment_name + "/evolution.txt";
@@ -777,40 +661,52 @@ Evolution::exportGenerationMetrics(
       path,
       std::ofstream::app);
 
-  double maximum_fitness = 0;
-  std::string best_genome = "0";
-  double average_fitness = 0;
+  evolution_file << generation;
 
-  evolution_file << generation << " ";
-
-  for (int i = 0;
-       i < this->getPopulation().size();
-       i++)
+  // fetches three types of fitness
+  for(int f=0; f<3; f++)
   {
-    if (this->getPopulation()[i].getFinalFitness() >
-        maximum_fitness)
-    {  // finds the maximum fitness of the population
+    double maximum_fitness = 0;
+    std::string best_genome = "0";
+    double average_fitness = 0;
+    double fitness = 0;
 
-      best_genome = this->getPopulation()[i].getId();
-      maximum_fitness = this->getPopulation()[i].getFinalFitness();
+    for (int i = 0;
+         i < this->getPopulation().size();
+         i++)
+    {
+      if(f==0)
+       fitness = this->getPopulation()[i].getNoveltyFitness();
+      if(f==1)
+        fitness = this->getPopulation()[i].getLocomotionFitness();
+      if(f==2)
+        fitness = this->getPopulation()[i].getFinalFitness();
+
+      // finds the maximum/best fitness of the population
+      if (fitness > maximum_fitness)
+      {
+        best_genome = this->getPopulation()[i].getId();
+        maximum_fitness = fitness;
+      }
+      average_fitness += fitness;
     }
-    average_fitness += this->getPopulation()[i].getFinalFitness();  //  sums
-    // all fitnesses
 
+    // calculates the average
+    average_fitness /= this->getPopulation().size();
+
+    evolution_file << " " << best_genome
+                   << " " << maximum_fitness
+                   << " " << average_fitness;
   }
 
-  average_fitness /= this->getPopulation().size();  // finds the average of the fitnesses
-
-  evolution_file << best_genome << " "<<
-                    maximum_fitness << " " <<
-                    average_fitness;
+  // gets metrics about measures
   for (const auto &m : metrics)
   {
     evolution_file << " " << m;
   }
+
   evolution_file << std::endl;
   evolution_file.close();
-
 }
 
 
@@ -875,13 +771,13 @@ void Evolution::loadIndividuals(int generation, std::string type)
                  "/temp.txt").c_str());
 
     path_list = this->path + "experiments/" +
-                            this->experiment_name +"/temp.txt";
+                this->experiment_name +"/temp.txt";
   }
   else
   {
     // reads list of genomes in archive
     path_list = this->path+"experiments/" +
-                            this->experiment_name + "/archive.txt";
+                this->experiment_name + "/archive.txt";
   }
 
   std::ifstream listgenomes(path_list.c_str());
@@ -892,128 +788,119 @@ void Evolution::loadIndividuals(int generation, std::string type)
       listgenomes,
       linegenome))
   {
-      std::string idgenome = "";
-      std::string idparent1 = "";
-      std::string idparent2 = "";
+    std::string idgenome = "";
+    std::string idparent1 = "";
+    std::string idparent2 = "";
 
-      if(type == "population")
-      {
-        std::vector< std::string > tokens;
-        boost::split(
-            tokens,
-            linegenome,
-            boost::is_any_of("_."));
-        idgenome  = tokens[1];
-        idparent1 = tokens[3];
-        idparent2 = tokens[5];
-      }else
-      {
-        std::vector< std::string > tokens;
-        boost::split(
-            tokens,
-            linegenome,
-            boost::is_any_of(" "));
-        idgenome  = tokens[0];
-        idparent1 = tokens[1];
-        idparent2 = tokens[2];
-      }
+    if(type == "population")
+    {
+      std::vector< std::string > tokens;
+      boost::split(
+          tokens,
+          linegenome,
+          boost::is_any_of("_."));
+      idgenome  = tokens[1];
+      idparent1 = tokens[3];
+      idparent2 = tokens[5];
+    }else
+    {
+      std::vector< std::string > tokens;
+      boost::split(
+          tokens,
+          linegenome,
+          boost::is_any_of(" "));
+      idgenome  = tokens[0];
+      idparent1 = tokens[1];
+      idparent2 = tokens[2];
+    }
 
-      Genome gen = Genome(idgenome, idparent1, idparent2, -1, -1);
+    Genome gen = Genome(idgenome, idparent1, idparent2);
 
-      // finds number of generation to which the genome belongs to
-      int generation_genome = this->getGeneration_genome(idgenome);
+    // finds number of generation to which the genome belongs to
+    int generation_genome = this->getGeneration_genome(idgenome);
 
-      // reads the file with the genome
-      std::ifstream listalphabet(
-          this->path+"experiments/" + this->experiment_name + "/offspringpop" +
-          std::to_string(generation_genome) + "/genome" + idgenome +
-          ".txt");
-      std::string linealphabet;
-      // for each letter of the alphabet
-      while (getline(
-          listalphabet,
-          linealphabet))
-      {
+    // reads the file with the genome
+    std::ifstream listalphabet(
+        this->path+"experiments/" + this->experiment_name + "/offspringpop" +
+        std::to_string(generation_genome) + "/genome" + idgenome +
+        ".txt");
+    std::string linealphabet;
+    // for each letter of the alphabet
+    while (getline(
+        listalphabet,
+        linealphabet))
+    {
 
-        // gets letter and production rule from file
-        std::vector< std::string > items;
-        boost::split(
-            items,
-            linealphabet,
-            boost::is_any_of(" "));
-        std::vector< std::string > items_rule(
-            items.begin() + 1,
-            items.begin() + items.size() -
-            1);
+      // gets letter and production rule from file
+      std::vector< std::string > items;
+      boost::split(
+          items,
+          linealphabet,
+          boost::is_any_of(" "));
+      std::vector< std::string > items_rule(
+          items.begin() + 1,
+          items.begin() + items.size() -
+          1);
 
-        // build a genetic-string with the production rule for the letter
-        auto lgs =  GeneticString();
-        lgs = gen.build_genetic_string(
-            lgs,
-            items_rule);
+      // build a genetic-string with the production rule for the letter
+      auto lgs =  GeneticString();
+      lgs = gen.build_genetic_string(
+          lgs,
+          items_rule);
 
-        // adds letter and its production rule (made a genetic-string) to the grammar of the genome
-        gen.addLetterGrammar(
-            items[0],
-            lgs);
+      // adds letter and its production rule (made a genetic-string) to the grammar of the genome
+      gen.addLetterGrammar(
+          items[0],
+          lgs);
 
-      }
+    }
 
-      // reads the measures of the genome
-      std::ifstream listmeasures(
-          this->path+"experiments/" + this->experiment_name + "/offspringpop" +
-          std::to_string(generation_genome) + "/measures" + idgenome +
-          ".txt");
-      std::string linemeasures;
-      // for each measure of the list
-      while (getline(
-          listmeasures,
-          linemeasures))
-      {
+    // reads the measures of the genome
+    std::ifstream listmeasures(
+        this->path+"experiments/" + this->experiment_name + "/offspringpop" +
+        std::to_string(generation_genome) + "/measures" + idgenome +
+        ".txt");
+    std::string linemeasures;
+    // for each measure of the list
+    while (getline(
+        listmeasures,
+        linemeasures))
+    {
 
-        std::vector< std::string > tokens;
-        boost::split(
-            tokens,
-            linemeasures,
-            boost::is_any_of(":"));
+      std::vector< std::string > tokens;
+      boost::split(
+          tokens,
+          linemeasures,
+          boost::is_any_of(":"));
 
-        gen.updateMeasure(
-            tokens[0],
-            std::stod(tokens[1]));
-      }
+      gen.updateMeasure(
+          tokens[0],
+          std::stod(tokens[1]));
+    }
 
     // reads fitness of the genome
-      std::ifstream fitness(
-          this->path+"experiments/" + this->experiment_name + "/offspringpop" +
-          std::to_string(generation_genome) + "/fitness" + idgenome +
-          ".txt");
-      if (fitness.is_open())
-      {
-        std::string linefitness;
-        getline(
-            fitness,
-            linefitness);
-
-        std::vector< std::string > tokens;
-        boost::split(
-            tokens,
-            linefitness,
-            boost::is_any_of(" "));
-
-        gen.updateFinalFitness(std::stod(tokens[0]));
-        gen.updateNoveltyFitness(std::stod(tokens[1]));
-        gen.updateLocomotionFitness(std::stod(tokens[2]));
-      }
+    std::ifstream fitness(
+        this->path+"experiments/" + this->experiment_name + "/offspringpop" +
+        std::to_string(generation_genome) + "/fitness" + idgenome +
+        ".txt");
+    if (fitness.is_open())
+    {
+      std::string linefitness;
+      getline(
+          fitness,
+          linefitness);
+      gen.updateLocomotionFitness(std::stod(linefitness));
+    }
 
 
-      if(type == "population")
-      {
-        // adds genome to the population
-        this->population.push_back(gen);
-      }else{
-        // adds genome to the archive
-        this->archive.push_back(gen);
-      }
+    if(type == "population")
+    {
+      // adds genome to the population
+      this->population.push_back(gen);
+    }else{
+      // adds genome to the archive
+      this->archive.push_back(gen);
+    }
 
   }
 
@@ -1049,9 +936,11 @@ int Evolution::loadExperiment()
             std::to_string(gi + 1);
   system(("exec rm -r " + pathdir).c_str());
 
+
   // loads  population and archive
   this->loadIndividuals(gi, "population");
   this->loadIndividuals(0, "archive");
+
 
   // loads state of the morphological_grid_accumulated
   std::string line;
@@ -1104,7 +993,7 @@ void Evolution::saveLocomotionFitness(
 
   int generation_genome = this->getGeneration_genome(this->offspring[index].getId());
 
-  // exports fitness ###MOVE!
+  // exports fitness for recovery
   std::ofstream file;
   std::string path2 =
       this->path+"experiments/"
@@ -1113,7 +1002,6 @@ void Evolution::saveLocomotionFitness(
   file.open(path2);
   file
       << this->offspring[index].getFinalFitness()
-      << " "<< this->offspring[index].getNoveltyFitness()
       << " " << this->offspring[index].getLocomotionFitness();
   file.close();
 }
@@ -1150,81 +1038,99 @@ void Evolution::addToArchive()
 
   file.close();
 }
-//
-//void Evolution::evaluateIndividuals(int generation, std::vector<Genome *>  * individuals_reference, std::vector<Genome *>  * individuals_compare){
-//
-//
-//  std::ofstream history_file;
-//  std::string path = "../../experiments/"+this->experiment_name+"/history.txt";
-//  history_file.open(path, std::ofstream::app);
-//
-//
-//  // matrix with all individuals
-//  // columns: number of metrics / lines: number of genomes
-//  arma::mat compare(individuals_compare->at(0)->getMeasures().size() , individuals_compare->size());
-//
-//  for(int i=0; i < individuals_compare->size(); i++) {
-//
-//    int m = 0;
-//    for( const auto& it : individuals_compare->at(i)->getMeasures()){
-//
-//      compare(m, i) = it.second;
-//      m ++;
-//    }
-//
-//  }
-//
-//
-//  for(int i=0; i < individuals_reference->size(); i++) {
-//
-//    // matrix with individuals which will be compared to the others
-//    // columns: number of metrics / single line: genome
-//    arma::mat reference(individuals_reference->at(0)->getMeasures().size(), 1);
-//
-//    int m = 0;
-//    for( const auto& it : individuals_reference->at(i)->getMeasures()){
-//
-//      reference(m, 0) = it.second;
-//      m ++;
-//    }
-//
-//    NeighborSearch<NearestNeighborSort, EuclideanDistance> nn(compare);
-//    arma::Mat<size_t> neighbors;
-//    arma::mat distances;
-//
-//    // search for each individual, the nearest neighbors (+1 because it includes itself)
-//    nn.Search(reference, this->params["k_neighbors"]+1, neighbors, distances);
-//
-//    double fitness = 0;
-//    for (size_t j = 0; j < neighbors.n_elem; ++j) {
-//
-//      fitness +=  distances[j];
-//      this->aux.logs("nearest neighbor  "+std::to_string(j)+" for genome " +individuals_reference->at(i)->getId()+ " has distance " + std::to_string(distances[j]));
-//    }
-//
-//    // averages the nearest neighboards
-//    fitness = fitness/this->params["k_neighbors"];
-//    individuals_reference->at(i)->updateFitness(fitness);
-//
-//
-//    history_file << std::to_string(generation)<<" "     // generation
-//                 << individuals_reference->at(i)->getId()<<" "   // idgenome
-//                 << individuals_reference->at(i)->getFitness()<<" "  // fitness genome
-//                 << individuals_reference->at(i)->getId_parent1()<<" "  // id of parent1
-//                 << individuals_reference->at(i)->getFit_parent1()<<" "  // fitness of parent1
-//                 << individuals_reference->at(i)->getId_parent2()<<" " // id of parent2
-//                 << individuals_reference->at(i)->getFit_parent2()<<" " // fitness of parent2
-//                 <<   (individuals_reference->at(i)->getFitness()-individuals_reference->at(i)->getFit_parent1())
-//                      + (individuals_reference->at(i)->getFitness()-individuals_reference->at(i)->getFit_parent2())
-//                        / (float)2// mean dif fitness from parents
-//                 << std::endl;
-//
-//  }
-//
-//  history_file.close();
-//
-//}
 
+
+
+/* Calculate the novelty of the individuals.
+ * */
+void Evolution::calculateNovelty()
+{
+  std::vector<Genome> individuals_compare;
+  individuals_compare.insert(individuals_compare.end(),
+                             this->population.begin(), this->population.end());
+  individuals_compare.insert(individuals_compare.end(),
+                             this->archive.begin(), this->archive.end());
+
+  //matrix with all individuals
+  // columns: number of metrics / lines: number of genomes
+  arma::mat compare(
+      individuals_compare[0].getMeasures().size(),
+      individuals_compare.size());
+
+  for (int i = 0; i < individuals_compare.size(); i++)
+  {
+    int m = 0;
+    for (const auto &it : individuals_compare[i].getMeasures())
+    {
+      compare(
+          m,
+          i) = it.second;
+      m++;
+    }
+  }
+
+  for (int i = 0; i < this->population.size(); i++)
+  {
+    // matrix with individuals which will be compared to the others
+    // columns: number of metrics / single line: genome
+    arma::mat reference(
+        this->population[0].getMeasures().size(),
+        1);
+
+    int m = 0;
+    for (const auto &it : this->population[i].getMeasures())
+    {
+
+      reference(
+          m,
+          0) = it.second;
+      m++;
+    }
+
+    NeighborSearch< NearestNeighborSort, EuclideanDistance > nn(compare);
+    arma::Mat< size_t > neighbors;
+    arma::mat distances;
+
+    // search for each individual, the nearest neighbors (+1 because it includes itself)
+    nn.Search(
+        reference,
+        this->params["k_neighbors"] + 1,
+        neighbors,
+        distances);
+
+    double fitness = 0;
+    for (size_t j = 0; j < neighbors.n_elem; ++j)
+    {
+      fitness += distances[j];
+      this->aux.logs(
+          "nearest neighbor  " + std::to_string(j) + " for genome "
+          + this->population[i].getId() + " has distance "
+          + std::to_string(distances[j]));
+    }
+
+    // averages the nearest neighboards
+    fitness = fitness / this->params["k_neighbors"];
+
+    this->population[i].updateNoveltyFitness(fitness);
+
+  }
+}
+
+/**
+ * Consolidates locomotion fitness with novelty fitness.
+ **/
+void Evolution::calculateFinalFitness()
+{
+  for (int i = 0; i < this->population.size(); i++)
+  {
+    double fitness =
+        30*this->population[i].getLocomotionFitness()
+        +
+        this->population[i].getNoveltyFitness();
+
+    this->population[i].updateFinalFitness(fitness);
+  }
+}
 
 
 
@@ -1256,7 +1162,7 @@ double Evolution::runExperiment_part1(
   this->logsTime("start gen");
 
   this->aux.createFolder(this->path+"experiments/"+this->experiment_name +
-                       "/offspringpop"+std::to_string(generation));
+                         "/offspringpop"+std::to_string(generation));
 
   if(generation == 1)
   {
@@ -1282,18 +1188,18 @@ double Evolution::runExperiment_part1(
 
   // develops genomes of the initial population
   this->developIndividuals(
-        argc,
-        argv,
-        LS,
-        generation,
-        this->offspring,
-        this->experiment_name + "/offspringpop");
+      argc,
+      argv,
+      LS,
+      generation,
+      this->offspring,
+      this->experiment_name + "/offspringpop");
 
   // measures phenotypes of the individuals
   this->measureIndividuals(
-        generation,
-        this->offspring,
-        "/offspringpop");
+      generation,
+      this->offspring,
+      "/offspringpop");
 
   // updates the average measures for the population
   this->savesValidity(generation);
@@ -1307,45 +1213,50 @@ double Evolution::runExperiment_part1(
 **/
 double Evolution::runExperiment_part2(int generation)
 {
-    // saves a history with the fitnesses of new individuals
-    this->saveHistory(generation);
 
-      // adds new individuals to population
-    for (int j = 0;
-         j < this->offspring.size();
-         j++)
-    {
-      this->population.push_back(this->offspring[j]);
-    }
+  // adds new individuals to population
+  for (int j = 0;
+       j < this->offspring.size();
+       j++)
+  {
+    this->population.push_back(this->offspring[j]);
+  }
 
-    std::vector< int > niche_measures = this->calculateNicheCoverage();
+  this->calculateNovelty();
 
-    if(generation != 1)
-    {
-      // selects individuals, keeping the population with a fixed size
-      this->selection();
+  this->calculateFinalFitness();
 
-      // saves phenotypes of the selected population to a separated folder (only for visualization issues)
-      this->exportPop(generation);
-    }
+  // saves a history with the fitnesses of new individuals
+  this->saveHistory(generation);
 
-    // saves metrics of evolution to file
-    this->exportGenerationMetrics(
-        generation,
-        niche_measures);
+  std::vector< int > niche_measures = this->calculateNicheCoverage();
 
-    this->summaryNicheCoverage();
+  if(generation != 1)
+  {
+    // selects individuals, keeping the population with a fixed size
+    this->selection();
 
+    // saves phenotypes of the selected population to a separated folder (only for visualization issues)
+    this->exportPop(generation);
+  }
 
-    // adds some of the new individuals to archive
-    this->addToArchive();
+  // saves metrics of evolution to file
+  this->exportGenerationMetrics(
+      generation,
+      niche_measures);
 
-    // saves the number of the last generation created/evaluated
-    this->writesEvolutionState(
-        generation,
-        this->next_id);
+  this->summaryNicheCoverage();
 
-    this->logsTime("end gen");
+  // adds some of the new individuals to archive
+  // fitness in the archive might be outdated by it would be used
+  this->addToArchive();
+
+  // saves the number of the last generation created/evaluated
+  this->writesEvolutionState(
+      generation,
+      this->next_id);
+
+  this->logsTime("end gen");
 }
 
 void Evolution::summaryNicheCoverage()
@@ -1555,7 +1466,7 @@ Evolution::calculateNicheCoverage()
 
 
   std::vector< int > morphological_grids;
-  morphological_grids.push_back((int) this->morphological_grid_generation.size());  // pos 0
+  //morphological_grids.push_back((int) this->morphological_grid_generation.size());  // pos 0
   morphological_grids.push_back((int) this->morphological_grid_accumulated.size()); // pos 1
   for (const auto &it :this->morphological_measures_accumulated)
   {
@@ -1564,4 +1475,3 @@ Evolution::calculateNicheCoverage()
 
   return morphological_grids;
 }
-

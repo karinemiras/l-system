@@ -70,6 +70,8 @@ public:
                                  std::vector<int> metrics);
     void saveLocomotionFitness(std::string genome_id, double fitness);
     void exportPop(int generation);
+    void calculateNovelty();
+    void calculateFinalFitness();
     void saveParameters();
     void logsTime(std::string moment);
     void setupEvolution();
@@ -89,7 +91,6 @@ public:
     void initExperiment(int argc, char* argv[],
                        LSystem LS);
     void summaryNicheCoverage();
-    void compareIndividuals(int generation);
     int getGeneration_genome(std::string idgenome);
     double compareIndividual(Measures m,
                              std::string idgenome);
@@ -147,6 +148,7 @@ protected:
 
     // contains the genomes of all individuals in the archive
     std::vector<Genome>  archive = std::vector<Genome> ();
+
 
 };
 
