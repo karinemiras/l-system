@@ -423,12 +423,6 @@ void Evolution::createHeader()
       << "generation idbest_nov maxfit_nov meanfit_nov idbest_loco "
           "maxfit_loco meanfit_loco idbest_fin maxfit_fin meanfit_fin "
           "nichecoverage";
-  for (int i = 0;
-       i < this->measures_names.size();
-       i++)
-  {
-    file << " " << this->measures_names[i];
-  }
   file << std::endl;
   file.close();
 
@@ -651,8 +645,7 @@ void Evolution::cleanVertex(DecodedGeneticString::Vertex * v){
  */
 
 void Evolution::exportGenerationMetrics(
-    int generation,
-    std::vector< int > metrics)
+    int generation,std::vector<int> metrics)
 {
   std::ofstream evolution_file;
   std::string path =
@@ -699,7 +692,6 @@ void Evolution::exportGenerationMetrics(
                    << " " << average_fitness;
   }
 
-  // gets metrics about measures
   for (const auto &m : metrics)
   {
     evolution_file << " " << m;
@@ -1001,8 +993,7 @@ void Evolution::saveLocomotionFitness(
       std::to_string(generation_genome)+ "/fitness"+this->offspring[index].getId()+".txt";
   file.open(path2);
   file
-      << this->offspring[index].getFinalFitness()
-      << " " << this->offspring[index].getLocomotionFitness();
+      <<  this->offspring[index].getLocomotionFitness();
   file.close();
 }
 
@@ -1242,8 +1233,7 @@ double Evolution::runExperiment_part2(int generation)
 
   // saves metrics of evolution to file
   this->exportGenerationMetrics(
-      generation,
-      niche_measures);
+      generation,niche_measures);
 
   this->summaryNicheCoverage();
 
@@ -1414,17 +1404,6 @@ Evolution::calculateNicheCoverage()
               -1 * (it.second - (b / this->params["grid_bins"]));
         }
       }
-
-      // accounts for occurrence of value for measure
-      if (std::find(
-          this->morphological_measures_accumulated[it.first].begin(),
-          this->morphological_measures_accumulated[it.first].end(),
-          it.second)
-          == this->morphological_measures_accumulated[it.first].end())
-      {
-
-        this->morphological_measures_accumulated[it.first].push_back(it.second);
-      }
     }
 
     // if point already exists in the array, adds an individual and the id
@@ -1466,12 +1445,8 @@ Evolution::calculateNicheCoverage()
 
 
   std::vector< int > morphological_grids;
-  //morphological_grids.push_back((int) this->morphological_grid_generation.size());  // pos 0
-  morphological_grids.push_back((int) this->morphological_grid_accumulated.size()); // pos 1
-  for (const auto &it :this->morphological_measures_accumulated)
-  {
-    morphological_grids.push_back((int) it.second.size());
-  }
+  morphological_grids.push_back((int) this->morphological_grid_accumulated.size());
+
 
   return morphological_grids;
 }
