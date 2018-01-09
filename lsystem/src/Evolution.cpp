@@ -1115,7 +1115,7 @@ void Evolution::calculateFinalFitness()
   for (int i = 0; i < this->population.size(); i++)
   {
     double fitness =
-        15*this->population[i].getLocomotionFitness()
+        10*this->population[i].getLocomotionFitness()
         +
         this->population[i].getNoveltyFitness();
 

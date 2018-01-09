@@ -1075,16 +1075,16 @@ void Genome::convertYamlBody(
   }
   if (letter_convertion == "AJ2")
   {
-    robot_file << spacing2 << "    blue: 0.58" << std::endl;
-    robot_file << spacing2 << "    green: 0.08" << std::endl;
-    robot_file << spacing2 << "    red: 1" << std::endl;
+    robot_file << spacing2 << "    blue: 0" << std::endl;
+    robot_file << spacing2 << "    green: 0" << std::endl;
+    robot_file << spacing2 << "    red: 0.7" << std::endl;
   }
 
   if (letter_convertion == "AJ1")
   {
-    robot_file << spacing2 << "    blue: 0" << std::endl;
-    robot_file << spacing2 << "    green: 0" << std::endl;
-    robot_file << spacing2 << "    red: 0.7" << std::endl;
+    robot_file << spacing2 << "    blue: 0.58" << std::endl;
+    robot_file << spacing2 << "    green: 0.08" << std::endl;
+    robot_file << spacing2 << "    red: 1" << std::endl;
   }
   if (letter_convertion == "B")
   {
