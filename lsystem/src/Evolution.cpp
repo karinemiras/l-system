@@ -422,7 +422,7 @@ void Evolution::createHeader()
   file
       << "generation idbest_nov maxfit_nov meanfit_nov idbest_loco "
           "maxfit_loco meanfit_loco idbest_fin maxfit_fin meanfit_fin "
-          "nichecoverage";
+          "nichecoverage_generation nichecoverage_accumulated";
   file << std::endl;
   file.close();
 
@@ -1115,7 +1115,7 @@ void Evolution::calculateFinalFitness()
   for (int i = 0; i < this->population.size(); i++)
   {
     double fitness =
-        10*this->population[i].getLocomotionFitness()
+        15*this->population[i].getLocomotionFitness()
         +
         this->population[i].getNoveltyFitness();
 
@@ -1370,6 +1370,8 @@ std::vector< std::string > Evolution::readsEvolutionState()
 std::vector< int >
 Evolution::calculateNicheCoverage()
 {
+  morphological_grid_generation =  std::map<std::string, std::vector<double>>();
+
   for (int i = 0;
        i < this->offspring.size();
        i++)
@@ -1404,6 +1406,17 @@ Evolution::calculateNicheCoverage()
               -1 * (it.second - (b / this->params["grid_bins"]));
         }
       }
+    }
+
+    // if point already exists in the array, adds an individual and the difference between them
+    if(morphological_grid_generation.count(key_point)>0) {
+
+      morphological_grid_generation[key_point].push_back(distance); // add map with key=id value=distance ?
+
+      // if point does not exist in the array yet, , adds new point with its first individual and the difference between them
+    }else {
+      std::vector<double> individual; individual.push_back(distance);
+      morphological_grid_generation[key_point] = individual;
     }
 
     // if point already exists in the array, adds an individual and the id
@@ -1445,6 +1458,7 @@ Evolution::calculateNicheCoverage()
 
 
   std::vector< int > morphological_grids;
+  morphological_grids.push_back((int)morphological_grid_generation.size());
   morphological_grids.push_back((int) this->morphological_grid_accumulated.size());
 
 

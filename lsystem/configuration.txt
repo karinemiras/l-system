@@ -1,4 +1,4 @@
-pop_size 100
+pop_size 6
 num_generations 10
 k_neighbors 5
 mutation_prob 1

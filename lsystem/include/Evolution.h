@@ -40,10 +40,6 @@ public:
         this->measures_names.push_back("symmetry");
         this->measures_names.push_back("total_components");
 
-        for(int i=0;i<this->measures_names.size(); i++) {
-            this->morphological_measures_accumulated[this->measures_names[i]] = std::vector<double>();
-        }
-
     }
 
     void saveHistory(int generation);
@@ -128,10 +124,6 @@ protected:
     std::map<std::string, std::vector<std::string>>
             morphological_grid_accumulated =
             std::map<std::string, std::vector<std::string>>();
-
-    std::map<std::string, std::vector<double>>
-            morphological_measures_accumulated =
-            std::map<std::string, std::vector<double>>();
 
      // containsgeneral auxiliar methods for the experiments
     Aux aux = Aux(this->experiment_name,this->getParams(),this->path);

@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 
     /* test setup */
       evolve_generation.setupEvolution();
-      int load_generation = 0;//0;
+      int load_generation = 0;
       int ini = 1;
     /* test setup */
 
