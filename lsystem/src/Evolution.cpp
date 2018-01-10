@@ -753,12 +753,18 @@ void Evolution::loadIndividuals(int generation, std::string type)
 {
 
   std::string path_list = "";
+  std::string folder = "";
+
+  if(generation==1)
+    folder = "offspringpop";
+  else
+    folder = "selectedpop";
 
   if(type == "population")
   {
     // generates list of files (genomes of last population)
     std::system(("ls " + this->path + "experiments/" + this->experiment_name +
-                 "/selectedpop" + std::to_string(generation) +
+                 "/"+folder + std::to_string(generation) +
                  ">" + this->path + "experiments/" + this->experiment_name +
                  "/temp.txt").c_str());
 
@@ -1115,9 +1121,12 @@ void Evolution::calculateFinalFitness()
   for (int i = 0; i < this->population.size(); i++)
   {
     double fitness =
-        10*this->population[i].getLocomotionFitness()
+         100 * this->population[i].getLocomotionFitness()
         +
-        this->population[i].getNoveltyFitness();
+         this->population[i].getNoveltyFitness()
+        -
+         0.05 *  this->population[i].getMeasures()["connectivity2"]
+    ;
 
     this->population[i].updateFinalFitness(fitness);
   }
