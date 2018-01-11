@@ -422,6 +422,7 @@ void Evolution::createHeader()
   file
       << "generation idbest_nov maxfit_nov meanfit_nov idbest_loco "
           "maxfit_loco meanfit_loco idbest_fin maxfit_fin meanfit_fin "
+          "idbest_rank maxfit_rank meanfit_rank "
           "nichecoverage_generation nichecoverage_accumulated";
   file << std::endl;
   file.close();
@@ -656,8 +657,8 @@ void Evolution::exportGenerationMetrics(
 
   evolution_file << generation;
 
-  // fetches three types of fitness
-  for(int f=0; f<3; f++)
+  // fetches all types of fitness
+  for(int f=0; f<4; f++)
   {
     double maximum_fitness = 0;
     std::string best_genome = "0";
@@ -674,6 +675,8 @@ void Evolution::exportGenerationMetrics(
         fitness = this->getPopulation()[i].getLocomotionFitness();
       if(f==2)
         fitness = this->getPopulation()[i].getFinalFitness();
+      if(f==3)
+        fitness = this->getPopulation()[i].getRankFitness();
 
       // finds the maximum/best fitness of the population
       if (fitness > maximum_fitness)
@@ -1114,24 +1117,24 @@ void Evolution::calculateNovelty()
 }
 
 /**
- * Consolidates locomotion fitness with novelty fitness.
+ * Consolidates final fitness for evolution.
  **/
 void Evolution::calculateFinalFitness()
 {
   for (int i = 0; i < this->population.size(); i++)
   {
+
+    this->population[i].updateRankFitness();
     double fitness =
-         100 * this->population[i].getLocomotionFitness()
-        +
-         this->population[i].getNoveltyFitness()
-        -
-         0.05 *  this->population[i].getMeasures()["connectivity2"]
+         this->population[i].getRankFitness()
+         *
+         std::max(0.5,
+                  1 - this->population[i].getNoveltyFitness());
     ;
 
     this->population[i].updateFinalFitness(fitness);
   }
 }
-
 
 
 /**

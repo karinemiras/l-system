@@ -120,6 +120,8 @@ public:
 
     double getFinalFitness();
 
+    double getRankFitness();
+
     std::map< std::string, GeneticString  > getGrammar();
 
     void setGrammar(std::map< std::string, GeneticString > grammar);
@@ -131,6 +133,8 @@ public:
     void updateNoveltyFitness(double fitness);
 
     void updateFinalFitness(double fitness);
+
+    void updateRankFitness();
 
     void addLetterGrammar(std::string letter,
                           GeneticString  lgs);
@@ -166,6 +170,8 @@ protected:
     double novelty_fitness = 0;
 
     double final_fitness = 0;
+
+    double rank_fitness = 0;
 
     int valid = 1; // valid 1=yes, 0=no
 

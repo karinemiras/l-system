@@ -100,6 +100,11 @@ double Genome::getFinalFitness()
   return this->final_fitness;
 }
 
+double Genome::getRankFitness()
+{
+  return this->rank_fitness;
+}
+
 /**
 * Generates initial production rules for the alphabet.
  * @param LS - Lsystem structure containing the alphabet.
@@ -1225,6 +1230,15 @@ void Genome::updateFinalFitness(double fitness)
   this->final_fitness = fitness;
 }
 
+void Genome::updateRankFitness()
+{
+
+  this->rank_fitness =
+      this->locomotion_fitness
+      *
+      std::max(0.5,
+                 1 - this->getMeasures()["connectivity2"]);
+}
 
 std::map< std::string, GeneticString  > Genome::getGrammar()
 {

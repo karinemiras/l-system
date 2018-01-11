@@ -68,6 +68,7 @@ public:
     void exportPop(int generation);
     void calculateNovelty();
     void calculateFinalFitness();
+    void calculateRankFitness();
     void saveParameters();
     void logsTime(std::string moment);
     void setupEvolution();
