@@ -413,7 +413,8 @@ void Evolution::createHeader()
       this->path+"experiments/" + this->experiment_name + "/history.txt";
   file.open(path);
   file
-      << "generation idgenome noveltyfit locofit finalfit idparent1 idparent2 "
+      << "generation idgenome noveltyfit locofit finalfit rankfit idparent1 "
+          "idparent2 "
       << std::endl;
   file.close();
 
@@ -473,6 +474,7 @@ void Evolution::saveHistory(int generation)
                  << this->population[i].getNoveltyFitness() << " "
                  << this->population[i].getLocomotionFitness() << " "
                  << this->population[i].getFinalFitness() << " "
+                 << this->population[i].getRankFitness() << " "
                  << this->population[i].getId_parent1() << " "  // id of parent1
                  << this->population[i].getId_parent2() << " " // id of parent2
                  << std::endl;
@@ -1128,8 +1130,7 @@ void Evolution::calculateFinalFitness()
     double fitness =
          this->population[i].getRankFitness()
          *
-         std::max(0.5,
-                  1 - this->population[i].getNoveltyFitness());
+         this->population[i].getNoveltyFitness()
     ;
 
     this->population[i].updateFinalFitness(fitness);

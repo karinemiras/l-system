@@ -1236,7 +1236,7 @@ void Genome::updateRankFitness()
   this->rank_fitness =
       this->locomotion_fitness
       *
-      std::max(0.5,
+      std::max(0.1,
                  1 - this->getMeasures()["connectivity2"]);
 }
 
