@@ -1237,7 +1237,8 @@ void Genome::updateRankFitness()
       this->locomotion_fitness
       *
       std::max(0.1,
-                 1 - this->getMeasures()["connectivity2"]);
+                 1 - this->getMeasures()["connectivity2"])
+   ;
 }
 
 std::map< std::string, GeneticString  > Genome::getGrammar()
