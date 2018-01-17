@@ -1270,6 +1270,7 @@ void Evolution::summaryNicheCoverage()
   std::string path = this->path+"experiments/" + this->experiment_name +
                      "/morphological_grid_summary.txt";
   file.open(path);
+  file << "point count"<< std::endl;
 
   for (const auto &it : this->morphological_grid_accumulated)
   {
