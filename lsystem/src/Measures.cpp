@@ -475,12 +475,9 @@ void Measures::measureComponent(std::string reference,
             }
             // if item is a joint (apart from active/passive horizontal ones)
             // and is connected to brick/core
-            // counts for joints effective joints: joints connected by both
-            // sides to brick/core component
-            if ((c2->item == "J1" or c2->item == "J2" or c2->item == "PJ2" or
-                 c2->item == "AJ2" or c2->item == "AJ1") and
-                (c2->back->item == "C" or c2->back->item == "B") and
-                (c2->front->item == "B")) {
+            // counts for joints effective joints: joints connected by bothsides
+            if (c2->item == "J1" or c2->item == "J2" or c2->item == "PJ2" or
+                 c2->item == "AJ2" or c2->item == "AJ1") {
 
                 this->gen->updateMeasure("effective_joints",
                                          this->gen->getMeasures()["effective_joints"] +
