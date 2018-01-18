@@ -115,8 +115,8 @@ void Measures::measurePhenotype(std::map<std::string, double> params,
                              this->gen->getMeasures()["viable_horizontal_joints"]);
 
     // practical limits for effective joints
-    int limit_joints = std::trunc(
-            (this->gen->getMeasures()["total_components"] - 1) / 2);
+    int limit_joints = 
+            this->gen->getMeasures()["total_components"] - 2;
 
 
     // normalizes the number of effective joints given a practical limit
