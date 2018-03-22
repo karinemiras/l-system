@@ -32,7 +32,7 @@ public:
 
     void initalizeMeasures();
     void measurePhenotype(std::map<std::string, double> params,
-                          std::string dirpath, int generation);
+                          std::string dirpath, int generation, int learning_int);
     void measureComponent(std::string reference,
                           std::string direction,
                           DecodedGeneticString::Vertex * c1,

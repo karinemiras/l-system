@@ -13,7 +13,13 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-    EvolutionIndirect evolve_generation = EvolutionIndirect("test","../../");
+
+    std::random_device rd;
+    std::default_random_engine generator(rd());
+    std::uniform_int_distribution<int> dist_1(1, 1000000);
+
+    EvolutionIndirect evolve_generation = EvolutionIndirect
+        ("exp_"+std::to_string(dist_1(generator)),"../../");
 
     /* test setup */
       evolve_generation.setupEvolution();
@@ -21,10 +27,11 @@ int main(int argc, char* argv[])
       int ini = 1;
     /* test setup */
 
-    for(int i=ini; i <= 2; i++)
+    for(int i=ini; i <= evolve_generation.getParams()["pop_size"]; i++)
     {
-        evolve_generation.runExperiment_part1(i, load_generation);
-        evolve_generation.runExperiment_part2(i);
+        evolve_generation.runExperiment_evolve1(i, load_generation);
+        evolve_generation.runExperiment_evolve2(i,
+                                                evolve_generation.getParams()["learning_iterations"]);
         load_generation = 0;
     }
 

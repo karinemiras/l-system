@@ -76,7 +76,7 @@ void Measures::initalizeMeasures() {
  * @param dirpath - directory where file with measures will be saved.
  */
 void Measures::measurePhenotype(std::map<std::string, double> params,
-                                std::string dirpath, int generation) {
+                                std::string dirpath, int generation, int learning_int) {
 
 
     // size of the component plus the spacing between components
@@ -115,8 +115,8 @@ void Measures::measurePhenotype(std::map<std::string, double> params,
                              this->gen->getMeasures()["viable_horizontal_joints"]);
 
     // practical limits for effective joints
-    int limit_joints = 
-            this->gen->getMeasures()["total_components"] - 2;
+    int limit_joints =
+      this->gen->getMeasures()["total_components"] - 2;
 
 
     // normalizes the number of effective joints given a practical limit
@@ -338,30 +338,38 @@ void Measures::measurePhenotype(std::map<std::string, double> params,
 
     /* BEGINNING: exports measures to files */
 
-    std::ofstream measures_file_general;
-    std::string path =
-        this->path+"experiments/" + this->experiment_name + "/measures.txt";
-    measures_file_general.open(path, std::ofstream::app);
+    if(learning_int == 0)
+    {
 
-    std::ofstream measures_file;
-    path = this->path+"experiments/" + this->experiment_name + dirpath +
-           std::to_string(generation) + "/measures" + this->gen->getId() +
-           ".txt";
-    measures_file.open(path);
+        std::ofstream measures_file_general;
+        std::string path =
+            this->path + "experiments/" + this->experiment_name +
+            "/measures.txt";
+        measures_file_general.open(
+            path,
+            std::ofstream::app);
 
-    measures_file_general << std::to_string(generation);
-    measures_file_general << " " << this->gen->getId();
+        std::ofstream measures_file;
+        path = this->path + "experiments/" + this->experiment_name + dirpath +
+               std::to_string(generation) + "/measures" + this->gen->getId() +
+               ".txt";
+        measures_file.open(path);
 
-    for (const auto &mea : this->gen->getMeasures()) {
+        measures_file_general << std::to_string(generation);
+        measures_file_general << " " << this->gen->getId();
 
-        measures_file << mea.first << ":" << mea.second << std::endl;
-        measures_file_general << " " << mea.second;
+        for (const auto &mea : this->gen->getMeasures())
+        {
+
+            measures_file << mea.first << ":" << mea.second << std::endl;
+            measures_file_general << " " << mea.second;
+        }
+
+        measures_file_general << std::endl;
+
+        measures_file.close();
+        measures_file_general.close();
     }
-
-    measures_file_general << std::endl;
-
-    measures_file.close();
-    measures_file_general.close();
 
     /* END: exports measures to files */
 
@@ -467,28 +475,28 @@ void Measures::measureComponent(std::string reference,
         }
 
         if (connected_sides == 2) {
-            // not the head
-            if (c2->item != "C") {
-                this->gen->updateMeasure("connectivity2",
-                                         this->gen->getMeasures()["connectivity2"] +
-                                         1); // counts for: two sides are connected
-            }
-            // if item is a joint (apart from active/passive horizontal ones)
-            // and is connected to brick/core
-            // counts for joints effective joints: joints connected by bothsides
-            if (c2->item == "J1" or c2->item == "J2" or c2->item == "PJ2" or
-                 c2->item == "AJ2" or c2->item == "AJ1") {
+          // not the head
+          if (c2->item != "C") {
+            this->gen->updateMeasure("connectivity2",
+                                     this->gen->getMeasures()["connectivity2"] +
+                                     1); // counts for: two sides are connected
+          }
+          // if item is a joint (apart from active/passive horizontal ones)
+          // and is connected to brick/core
+          // counts for joints effective joints: joints connected by bothsides
+          if (c2->item == "J1" or c2->item == "J2" or c2->item == "PJ2" or
+              c2->item == "AJ2" or c2->item == "AJ1") {
 
-                this->gen->updateMeasure("effective_joints",
-                                         this->gen->getMeasures()["effective_joints"] +
-                                         1);
-            }
-            if (c2->item == "C" or c2->item == "B")
-            {
-                this->gen->updateMeasure("sensors_slots",
-                                         this->gen->getMeasures()["sensors_slots"] +
-                                         2);
-            }
+            this->gen->updateMeasure("effective_joints",
+                                     this->gen->getMeasures()["effective_joints"] +
+                                     1);
+          }
+          if (c2->item == "C" or c2->item == "B")
+          {
+            this->gen->updateMeasure("sensors_slots",
+                                     this->gen->getMeasures()["sensors_slots"] +
+                                     2);
+          }
         }
 
         if (connected_sides == 3) { // if three have connections

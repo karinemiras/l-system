@@ -167,9 +167,9 @@ void EvolutionIndirect::mutation(
       dist_movingcommand(0,
                          (int) LS.getMovingCommands().size() - 1);
 
-  // distribution for the brain move commands
+  // distribution for the brain move commands (does not include brainperturb)
   std::uniform_int_distribution< int >
-      dist_brainmovecommand(0,
+      dist_brainmovecommand(1,
                             (int) LS.getBrainMoveCommands().size() - 1);
 
   // distribution for the brain change commands
@@ -280,10 +280,8 @@ void EvolutionIndirect::mutation(
         int pos_insertion = pos_i(generator);
 
         // if it is the production rule of the core-component, prevents new items from being inserted at the beginning, preserving the root
-        if (mutate_letter == "C" and pos_insertion == 0)
-        {
-          pos_insertion++;
-        }
+        if (mutate_letter == "C" and pos_insertion == 0)  pos_insertion++;
+
 
         // # adding mounting command
         if (type_of_adding == 1)
@@ -334,7 +332,7 @@ void EvolutionIndirect::mutation(
           genetic_string_item = com;
         }
 
-          // # adding brain change command
+          // # adding brain change command (topological change)
         else if (type_of_adding == 5)
         {
           aux = dist_brainchangecommand(generator);

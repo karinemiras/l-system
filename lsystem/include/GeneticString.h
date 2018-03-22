@@ -58,6 +58,10 @@ public:
 
   void remove(int pos);
 
+  std::string find(int pos);
+
+  void replace(int pos, std::string item);
+
   void create_joined_list(
       int pos_parent1_ini,
       int pos_parent2_ini,

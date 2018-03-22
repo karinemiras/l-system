@@ -25,11 +25,15 @@ BOOST_PYTHON_MODULE (lsystem_python)
                                std::string >())
       .def("setupEvolution",
            &EvolutionIndirect_python::setupEvolution)
-      .def("runExperiment_part1",
-           &EvolutionIndirect_python::runExperiment_part1)
-      .def("runExperiment_part2",
-           &EvolutionIndirect_python::runExperiment_part2)
+      .def("runExperiment_evolve1",
+           &EvolutionIndirect_python::runExperiment_evolve1)
+      .def("runExperiment_evolve2",
+           &EvolutionIndirect_python::runExperiment_evolve2)
       .def("saveLocomotionFitness",
            &EvolutionIndirect_python::saveLocomotionFitness)
+      .def("runExperiment_learn1",
+           &EvolutionIndirect_python::runExperiment_learn1)
+      .def("runExperiment_learn2",
+           &EvolutionIndirect_python::runExperiment_learn2)
       ;
 }

@@ -49,6 +49,7 @@ public:
                            char* argv[],
                            std::string test_genome);
     void measureIndividuals(int generation,
+                            int learning_int,
                             std::vector<Genome>  &individuals,
                             std::string dirpath);
 
@@ -60,11 +61,13 @@ public:
     void selection();
     std::vector<Genome>  getPopulation();
     std::map<std::string, double> getParams();
-    double runExperiment_part1(int generation, int load_experiment);
-    double runExperiment_part2(int generation);
+    void runExperiment_evolve1(int generation, int load_experiment);
+    void runExperiment_evolve2(int generation, int learning_int);
+    void runExperiment_learn1(int generation, int learning_int);
+    void runExperiment_learn2(int generation, int learning_int);
     void exportGenerationMetrics(int generation,
                                  std::vector<int> metrics);
-    void saveLocomotionFitness(std::string genome_id, double fitness);
+    void saveLocomotionFitness(std::string genome_id, double fitness, int learning_int);
     void exportPop(int generation);
     void calculateNovelty();
     void calculateFinalFitness();
@@ -72,7 +75,7 @@ public:
     void saveParameters();
     void logsTime(std::string moment);
     void setupEvolution();
-    void writesEvolutionState(int generation, int next_id);
+    void writesEvolutionState(int generation, int learning, int next_id);
     std::vector<std::string> readsEvolutionState();
     void loadsParams();
     void loadIndividuals(int generation, std::string type);
@@ -82,6 +85,7 @@ public:
     void developIndividuals(int argc, char* argv[],
                             LSystem LS,
                             int generation,
+                            int learning,
                             std::vector<Genome>  &individuals,
                             std::string dir);
     int loadExperiment();
@@ -95,6 +99,7 @@ public:
                           std::string idparent2);
     void  addToArchive();
     void cleanMemory(std::vector< int > index_selected);
+    void cleanMemory2(std::vector< int > index_selected);
     void cleanVertex(DecodedGeneticString::Vertex * v);
 
     virtual void initPopulation(LSystem LS){};
@@ -138,6 +143,9 @@ protected:
 
     // contains the genomes of all the individuals the new offspring
     std::vector<Genome>  offspring =  std::vector<Genome>();
+
+    // contains the genomes of all the individuals in the learning phase
+    std::vector<Genome>  offspring_learn =  std::vector<Genome>();
 
     // contains the genomes of all individuals in the archive
     std::vector<Genome>  archive = std::vector<Genome> ();

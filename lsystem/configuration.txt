@@ -1,5 +1,4 @@
 pop_size 10
-num_generations 10
 k_neighbors 1
 mutation_prob 1
 num_initial_comp 3
@@ -12,6 +11,7 @@ logs_to_screen 0
 logs_to_file 1
 show_phenotypes 0
 export_phenotypes 1
-export_genomes 1
 size_component 40
 spacing 1
+learning_iterations 3
+learning_mutation_type 1

@@ -40,11 +40,12 @@ void Evolution::readParams()
   std::ifstream myfile(this->path+"lsystem/configuration.txt");
 
   /*   pop_size - size of the population of genomes
+  *    num_generations - number of generations (#not being used!)
   *    offspring_prop - proportion of the population size to dcalculate size of offspring
   *    num_initial_comp - number of initial (random) components in the production rules of the grammar
+  *    k_neighbors - number of neighbors for novelty search
   *    show_phenotypes - flag to show the phenotype graphic
   *    export_phenotypes - if exports the phenotypes to images (1) or not (0)
-  *    export_genomes - if exports the genomes to files (1) or not (0)
   *    replacement_iterations - number of replacement iterations for the l-system
   *    size_component - size of each component in pixels
   *    spacing - spacing between components in pixels
@@ -54,7 +55,11 @@ void Evolution::readParams()
   *    grid_bins - number of bins to break morphological space
   *    logs_to_screen - if exports the logs to the screen (1) or not (0)
   *    logs_to_file - if exports logs to a file (1) or not (0)
+  *    learning_iterations  - number of iterations for the learning process     (0 means no learning)
+  *    learning_mutation_type - 1 for weights / 2 for weights and topology
   */
+
+
 
   if (myfile.is_open())
   {
@@ -336,6 +341,7 @@ double Evolution::compareParents(
  **/
 void Evolution::measureIndividuals(
     int generation,
+    int learning_int,
     std::vector< Genome > &individuals,
     std::string dirpath)
 {
@@ -364,7 +370,8 @@ void Evolution::measureIndividuals(
     m.measurePhenotype(
         this->params,
         dirpath,
-        generation);
+        generation,
+        learning_int);
 
     // compares measures between individuals
     if (individuals[i].getId_parent1() != "N")
@@ -491,7 +498,8 @@ void Evolution::savesValidity(int generation)
   std::ofstream file;
   std::string path =
       this->path + "experiments/" + this->experiment_name +
-      "/offspringpop" + std::to_string(generation) + "/validity_list.txt";
+      "/offspringpop" + std::to_string(generation)
+      + "/validity_list.txt";
   file.open(path);
   for (int i = 0;
        i <  this->offspring.size();
@@ -630,6 +638,61 @@ void Evolution::cleanMemory(std::vector< int > index_selected)
   std::cout<<"FINISH cleaning memory for non-selected individuals"<<std::endl;
 }
 
+/*
+ * Deallocate memory used by the non-selected individuals.
+ * */
+
+void Evolution::cleanMemory2(std::vector< int > index_selected)
+{
+  // cleaning memory
+  std::cout<<"START cleaning memory for non-selected individuals"<<std::endl;
+  for (int i = 0;
+       i < this->offspring.size();
+       i++)
+  {
+    // for non-selected individuals
+    if(std::find(
+        index_selected.begin(),
+        index_selected.end(),
+        i) == index_selected.end())
+    {
+      auto item = this->offspring[i].getGeneticString().getStart();
+      while (item not_eq NULL)
+      {
+        auto item2 = item->next;
+        delete item;
+        item = item2;
+      }
+
+//      std::cout<<"grammar genetic-strings"<<std::endl;
+//      for( auto &g: this->population[i].getGrammar())
+//      {
+//        item = g.second.getStart();
+//        while (item not_eq NULL)
+//        {
+//          auto item2 = item->next;
+//          delete item;
+//          item = item2;
+//        }
+//      }
+
+      this->cleanVertex(this->offspring[i].getDgs().getRoot());
+
+      if(this->offspring[i].getScene() != NULL)
+      {
+        QList< QGraphicsItem * > all = this->offspring[i].getScene()->items();
+        for (int i = 0; i < all.size(); i++)
+        {
+          QGraphicsItem *gi = all[i];
+          if (gi->parentItem() == NULL) delete gi;
+        }
+        delete this->offspring[i].getScene();
+      }
+    }
+  }
+  std::cout<<"FINISH cleaning memory for non-selected individuals"<<std::endl;
+}
+
 void Evolution::cleanVertex(DecodedGeneticString::Vertex * v){
 
   if(v != NULL)
@@ -734,6 +797,7 @@ void Evolution::developIndividuals(
     char *argv[],
     LSystem LS,
     int generation,
+    int learning,
     std::vector< Genome > &individuals,
     std::string dir)
 {
@@ -747,6 +811,7 @@ void Evolution::developIndividuals(
         this->params,
         LS,
         generation,
+        learning,
         this->path+"experiments/"+dir);
   }
 }
@@ -927,8 +992,12 @@ int Evolution::loadExperiment()
 
   // loads generation number from previous  experiment
   int gi = std::stoi(this->readsEvolutionState()[0]);
+
+  // loads learning-iteration number from previous  experiment
+  int li = std::stoi(this->readsEvolutionState()[1]);
+
   // loads next_id from previous experiment
-  this->next_id = std::stoi(this->readsEvolutionState()[1]);
+  this->next_id = std::stoi(this->readsEvolutionState()[2]);
 
   // deletes possible remains of unfinished generation
   std::string pathdir =
@@ -985,14 +1054,13 @@ int Evolution::loadExperiment()
  * */
 void Evolution::saveLocomotionFitness(
     std::string genome_id,
-    double fitness)
+    double fitness, int learning_int)
 {
 
   // updates locomotion fitness for the genome
   int index=0;
   while(this->offspring[index].getId() != genome_id)
     index++;
-  this->offspring[index].updateLocomotionFitness(fitness);
 
   int generation_genome = this->getGeneration_genome(this->offspring[index].getId());
 
@@ -1000,12 +1068,199 @@ void Evolution::saveLocomotionFitness(
   std::ofstream file;
   std::string path2 =
       this->path+"experiments/"
-      + this->experiment_name + "/offspringpop" +
-      std::to_string(generation_genome)+ "/fitness"+this->offspring[index].getId()+".txt";
+      + this->experiment_name +
+      "/offspringpop" + std::to_string(generation_genome)+
+      "/learning" +std::to_string(learning_int)+
+      "/fitness"+this->offspring[index].getId()+".txt";
   file.open(path2);
-  file
-      <<  this->offspring[index].getLocomotionFitness();
+
+  if(learning_int == 0)
+  {
+    this->offspring[index].updateLocomotionFitness(fitness);
+    file << this->offspring[index].getLocomotionFitness();
+  }else{
+    this->offspring_learn[index].updateLocomotionFitness(fitness);
+    file << this->offspring_learn[index].getLocomotionFitness();
+  }
+
   file.close();
+}
+
+/**
+ *  Performs the learning process with a 1+1 strategy.
+ **/
+void Evolution::runExperiment_learn1(int generation, int learning_int)
+{
+
+  int argc = 1;
+  char *argv[] = {"a"};
+  LSystem LS;
+
+  std::string mutate_letter = "";
+  int pos = 0;
+  std::string item = "";
+  std::string new_item = "";
+  std::vector< std::string > tokens;
+  double amplitude = 0;
+  double period = 0;
+  double off_set = 0;
+
+  std::random_device rd;
+  std::default_random_engine generator(rd());
+  std::normal_distribution<double> weight_nor(0, 1);
+  std::uniform_int_distribution< int >
+      dist_letter_target(0, (int) LS.getAlphabetIndex().size() - 1);
+
+  this->aux.createFolder(this->path+"experiments/"+this->experiment_name +
+                         "/offspringpop"+std::to_string(generation) +
+                         "/learning"+std::to_string(learning_int));
+
+  offspring_learn =  std::vector<Genome>();
+  for (int i = 0; i < this->offspring.size(); i++)
+  {
+
+    // copies current genotype
+    Genome gen = Genome(this->offspring[i].getId(),
+                        this->offspring[i].getId_parent1(),
+                        this->offspring[i].getId_parent2());
+    std::map< std::string, GeneticString  > grammar =
+        std::map< std::string, GeneticString  >();
+
+    for (const auto &letter : LS.getAlphabet())
+    {
+        GeneticString gsp = GeneticString(this->offspring[i]
+                                               .getGrammar()[letter.first]);
+        grammar.emplace(letter.first, gsp);
+    }
+    gen.setGrammar(grammar);
+    this->offspring_learn.push_back(gen);
+
+
+    // if it has any joint, looks for the oscillator to pertub the parameters
+    int pertubed_oscillator = 0;
+    if(this->offspring_learn[i].getValid() == 1)
+    {
+
+      while(pertubed_oscillator == 0)
+      {
+        mutate_letter = LS.getAlphabetIndex()[dist_letter_target(generator)];
+        std::uniform_int_distribution< int > pos_i(
+            0,this->offspring_learn[i].getGrammar()[mutate_letter].count());
+        pos = pos_i(generator);
+
+        if (this->offspring_learn[i].getGrammar()[mutate_letter].find(pos)
+                .substr(0,2) == "AJ")
+        {
+            item = this->offspring_learn[i].getGrammar()[mutate_letter].find(pos);
+            boost::split(tokens, item, boost::is_any_of("|"));
+
+            amplitude = std::stod(tokens[2]) + weight_nor(generator);
+            if(amplitude>10) amplitude = 10;
+            if(amplitude<=0) amplitude = 1;
+
+            period = std::stod(tokens[3]) + weight_nor(generator);
+            if(period>10) period = 10;
+            if(period<=0) period = 1;
+
+            off_set = std::stod(tokens[4]) + weight_nor(generator);
+            if(off_set>10) off_set = 10;
+            if(off_set<=0) off_set = 1;
+
+            new_item =  tokens[0]+"|"
+                       +tokens[1]+"|"
+                       +std::to_string(amplitude)+"|"
+                       +std::to_string(period)+"|"
+                       +std::to_string(off_set);
+
+          this->offspring_learn[i].getGrammar()[mutate_letter].replace(pos, new_item);
+
+          // log
+          this->aux.logs("local mutation: in "
+                         + this->offspring_learn[i].getId()
+                         + " for " + mutate_letter
+                         + " at " + std::to_string(pos)
+                         + " from "+item+ " by "+ new_item);
+
+          pertubed_oscillator = 1;
+        }
+      }
+    }
+
+
+    // defines letter to mutate
+    mutate_letter = LS.getAlphabetIndex()[dist_letter_target(generator)];
+    std::string com = LS.buildBrainCommand(LS.getBrainChangeCommands()[0]);
+
+    // defines position to add pertubation command
+    std::uniform_int_distribution< int > pos_i(0,
+                                     this->offspring_learn[i].getGrammar()[mutate_letter].count());
+    pos = pos_i(generator);
+    if (mutate_letter == "C" and pos == 0) pos++;
+
+
+    this->aux.logs("local mutation: add brain change command "
+                   + com
+                   + " in " + this->offspring_learn[i].getId()
+                   + " for " + mutate_letter
+                   + " at " + std::to_string(pos));
+
+    // mutate with brainperturb (local search)
+    this->offspring_learn[i].getGrammar()[mutate_letter].add(pos, com);
+
+
+  }
+
+  // develops genomes of the initial population
+  this->developIndividuals(
+      argc,
+      argv,
+      LS,
+      generation,
+      learning_int,
+      this->offspring_learn,
+      this->experiment_name + "/offspringpop");
+
+  // measures body phenotypes
+  this->measureIndividuals(
+      generation,
+      learning_int,
+      this->offspring_learn,
+      "/offspringpop");
+
+
+}
+
+void Evolution::runExperiment_learn2(int generation, int learning_int)
+{
+
+  for (int i = 0; i < this->offspring.size(); i++)
+  {
+    // if theres improvement replaces old genome
+    if (this->offspring_learn[i].getLocomotionFitness() >
+        this->offspring[i].getLocomotionFitness())
+    {
+      std::vector< int > old = std::vector< int >();
+      old.push_back(i);
+      this->cleanMemory(old);
+
+      this->offspring[i] = this->offspring_learn[i];
+
+      // replaces main-genome files
+      this->offspring[i].exportGenome(this->path+"experiments/" +
+                      this->experiment_name+"/offspringpop"+ std::to_string(generation));
+
+      this->aux.logs(" learning for " + this->offspring[i].getId() +
+                      " iteration "+ std::to_string(learning_int));
+
+    }
+  }
+
+  // saves the number of the last generation created/evaluated
+  this->writesEvolutionState(
+      generation-1,
+      learning_int,
+      this->next_id);
+
 }
 
 
@@ -1128,8 +1383,8 @@ void Evolution::calculateFinalFitness()
 
     this->population[i].updateRankFitness();
     double fitness =
-         this->population[i].getRankFitness()
-         *
+        // this->population[i].getRankFitness()
+        //  *
          this->population[i].getNoveltyFitness()
     ;
 
@@ -1141,7 +1396,7 @@ void Evolution::calculateFinalFitness()
 /**
 *  Evolution in the search for locomotion - part 1 of the process.
 **/
-double Evolution::runExperiment_part1(
+void Evolution::runExperiment_evolve1(
     int generation, int load_experiment)
 {
   int argc = 1;
@@ -1168,6 +1423,10 @@ double Evolution::runExperiment_part1(
   this->aux.createFolder(this->path+"experiments/"+this->experiment_name +
                          "/offspringpop"+std::to_string(generation));
 
+  this->aux.createFolder(this->path+"experiments/"+this->experiment_name +
+                         "/offspringpop"+std::to_string(generation) +
+                         "/learning0");
+
   if(generation == 1)
   {
     this->createHeader();
@@ -1190,22 +1449,32 @@ double Evolution::runExperiment_part1(
 
   }
 
-  // develops genomes of the initial population
+  // develops genomes
   this->developIndividuals(
       argc,
       argv,
       LS,
       generation,
+      0,
       this->offspring,
       this->experiment_name + "/offspringpop");
 
-  // measures phenotypes of the individuals
+  // exports current-genome files
+  for (int i = 0; i < this->offspring.size(); i++)
+  {
+      this->offspring[i].exportGenome
+          (this->path+"experiments/"+this->experiment_name
+           + "/offspringpop" + std::to_string(generation));
+  }
+
+  // measures body phenotypes
   this->measureIndividuals(
       generation,
+      0,
       this->offspring,
       "/offspringpop");
 
-  // updates the average measures for the population
+  // updates list of validit of phenotype
   this->savesValidity(generation);
 
 }
@@ -1215,7 +1484,7 @@ double Evolution::runExperiment_part1(
 *  Evolution in the search for locomotion - part 2 of the process. After
  *  fitness evaluation.
 **/
-double Evolution::runExperiment_part2(int generation)
+void Evolution::runExperiment_evolve2(int generation, int learning_int)
 {
 
   // adds new individuals to population
@@ -1257,6 +1526,7 @@ double Evolution::runExperiment_part2(int generation)
   // saves the number of the last generation created/evaluated
   this->writesEvolutionState(
       generation,
+      learning_int,
       this->next_id);
 
   this->logsTime("end gen");
@@ -1332,6 +1602,7 @@ void Evolution::logsTime(std::string moment)
  * */
 void Evolution::writesEvolutionState(
     int generation,
+    int learning,
     int next_id)
 {
 
@@ -1339,7 +1610,7 @@ void Evolution::writesEvolutionState(
   std::string path = this->path+"experiments/" + this->experiment_name +
                      "/evolutionstate.txt";
   logs_file.open(path);
-  logs_file << generation << " " << next_id;
+  logs_file << generation << " " << learning << " " << next_id;
   logs_file.close();
 }
 

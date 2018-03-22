@@ -50,7 +50,7 @@ void LSystem::build_brainmove_commands(){
     brainmove_commands.push_back("brainmoveFTS");
     // change 'to' of current-edge to child of current-to
     brainmove_commands.push_back("brainmoveTTC");
-    // change 'to' of current-edge to child of current-to
+    // change 'to' of current-edge to parent of current-to
     brainmove_commands.push_back("brainmoveTTP");
     // change 'to' of current-edge to sibling of current-to
     brainmove_commands.push_back("brainmoveTTS");
@@ -61,13 +61,13 @@ void LSystem::build_brainmove_commands(){
  */
 void LSystem::build_brainchange_commands(){
 
+    // perturb weight of connection between fromid and toid with: brainperturb_w
+    brainchange_commands.push_back("brainperturb");
     // add link between nodes idfrom and idto with w: brainedge_w
     // add node between nodes
     brainchange_commands.push_back("brainnode");
     // add edge between nodes
     brainchange_commands.push_back("brainedge");
-    // perturb weight of connection between fromid and toid with: brainperturb_w
-    brainchange_commands.push_back("brainperturb");
     // add new node between current fromid and toid with w from new to toid,
     // add self connection to fromid node with w: brainloop_w
     brainchange_commands.push_back("brainloop");

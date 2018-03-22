@@ -167,6 +167,36 @@ void GeneticString::remove(int pos)
     }
 }
 
+std::string GeneticString::find(int pos)
+{
+    GeneticString::Node *current = nullptr, *next = nullptr, *previous = nullptr;
+    current = start;
+    int current_pos = 1;
+
+    while (current_pos < pos)
+    { // looks for chosen position
+        current = current->next;
+        current_pos++;
+    }
+
+    return current->item;
+}
+
+void GeneticString::replace(int pos, std::string item)
+{
+    GeneticString::Node *current = nullptr, *next = nullptr, *previous = nullptr;
+    current = start;
+    int current_pos = 1;
+
+    while (current_pos < pos)
+    { // looks for chosen position
+        current = current->next;
+        current_pos++;
+    }
+
+    current->item = item;
+}
+
 
 /**
  * Swaps item from positions in the genetic-string.
