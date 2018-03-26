@@ -29,10 +29,11 @@ int main(int argc, char* argv[])
 
     for(int i=ini; i <= evolve_generation.getParams()["pop_size"]; i++)
     {
-        evolve_generation.runExperiment_evolve1(i, load_generation);
-        evolve_generation.runExperiment_evolve2(i,
-                                                evolve_generation.getParams()["learning_iterations"]);
-        load_generation = 0;
+        //evolve_generation.runExperiment_evolve1(i, load_generation);
+      // add learning!
+        //evolve_generation.runExperiment_evolve2(i,  evolve_generation
+      // .getParams()["learning_iterations"]);
+        //load_generation = 0;
     }
 
     return 0;

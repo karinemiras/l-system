@@ -340,7 +340,6 @@ void Measures::measurePhenotype(std::map<std::string, double> params,
 
     if(learning_int == 0)
     {
-
         std::ofstream measures_file_general;
         std::string path =
             this->path + "experiments/" + this->experiment_name +

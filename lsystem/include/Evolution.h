@@ -49,7 +49,7 @@ public:
                            char* argv[],
                            std::string test_genome);
     void measureIndividuals(int generation,
-                            int learning_int,
+                            int learning_it,
                             std::vector<Genome>  &individuals,
                             std::string dirpath);
 
@@ -61,13 +61,20 @@ public:
     void selection();
     std::vector<Genome>  getPopulation();
     std::map<std::string, double> getParams();
-    void runExperiment_evolve1(int generation, int load_experiment);
-    void runExperiment_evolve2(int generation, int learning_int);
-    void runExperiment_learn1(int generation, int learning_int);
-    void runExperiment_learn2(int generation, int learning_int);
+    void runExperiment_evolve1(int generation,
+                               int load_experiment,
+                               int learning_it);
+    void runExperiment_evolve2(int generation,
+                               int learning_it);
+    void runExperiment_learn1(int generation,
+                              int learning_it);
+    void runExperiment_learn2(int generation,
+                              int learning_it);
     void exportGenerationMetrics(int generation,
                                  std::vector<int> metrics);
-    void saveLocomotionFitness(std::string genome_id, double fitness, int learning_int);
+    void saveLocomotionFitness(std::string genome_id,
+                               double fitness,
+                               int learning_it);
     void exportPop(int generation);
     void calculateNovelty();
     void calculateFinalFitness();
@@ -75,10 +82,12 @@ public:
     void saveParameters();
     void logsTime(std::string moment);
     void setupEvolution();
-    void writesEvolutionState(int generation, int learning, int next_id);
+    void writesEvolutionState(int generation,
+                              int learning);
     std::vector<std::string> readsEvolutionState();
     void loadsParams();
-    void loadIndividuals(int generation, std::string type);
+    void loadIndividuals(int generation,
+                         std::string type);
     std::vector<int> calculateNicheCoverage();
     void createHeader();
     void updateParameter(std::string key, double value);

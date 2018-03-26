@@ -35,5 +35,7 @@ BOOST_PYTHON_MODULE (lsystem_python)
            &EvolutionIndirect_python::runExperiment_learn1)
       .def("runExperiment_learn2",
            &EvolutionIndirect_python::runExperiment_learn2)
+      .def("writesEvolutionState",
+           &EvolutionIndirect_python::writesEvolutionState)
       ;
 }

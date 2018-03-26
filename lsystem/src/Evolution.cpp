@@ -341,7 +341,7 @@ double Evolution::compareParents(
  **/
 void Evolution::measureIndividuals(
     int generation,
-    int learning_int,
+    int learning_it,
     std::vector< Genome > &individuals,
     std::string dirpath)
 {
@@ -371,27 +371,30 @@ void Evolution::measureIndividuals(
         this->params,
         dirpath,
         generation,
-        learning_int);
+        learning_it);
 
     // compares measures between individuals
-    if (individuals[i].getId_parent1() != "N")
+    if(learning_it == 0)
     {
+      if (individuals[i].getId_parent1() != "N")
+      {
 
-      double dif = this->compareIndividual(
-          m,
-          individuals[i].getId_parent1());
-      differences_file << individuals[i].getId() << " " << dif;
+        double dif = this->compareIndividual(
+            m,
+            individuals[i].getId_parent1());
+        differences_file << individuals[i].getId() << " " << dif;
 
-      dif = this->compareIndividual(
-          m,
-          individuals[i].getId_parent2());
-      differences_file << " " << dif;
+        dif = this->compareIndividual(
+            m,
+            individuals[i].getId_parent2());
+        differences_file << " " << dif;
 
-      dif = this->compareParents(
-          individuals[i].getId_parent1(),
-          individuals[i].getId_parent2());
-      differences_file << " " << dif << std::endl;
+        dif = this->compareParents(
+            individuals[i].getId_parent1(),
+            individuals[i].getId_parent2());
+        differences_file << " " << dif << std::endl;
 
+      }
     }
   }
 
@@ -819,19 +822,20 @@ void Evolution::developIndividuals(
 /**
  * Loads population of genomes from files, from previous experiment.
  **/
-void Evolution::loadIndividuals(int generation, std::string type)
+void Evolution::loadIndividuals(int generation,
+                                std::string type)
 {
 
   std::string path_list = "";
-  std::string folder = "";
 
-  if(generation==1)
-    folder = "offspringpop";
-  else
-    folder = "selectedpop";
-
-  if(type == "population")
+  if(type == "population" or type == "offspring")
   {
+    std::string folder = "";
+    if(generation==1 or type == "offspring")
+      folder = "offspringpop";
+    else
+      folder = "selectedpop";
+
     // generates list of files (genomes of last population)
     std::system(("ls " + this->path + "experiments/" + this->experiment_name +
                  "/"+folder + std::to_string(generation) +
@@ -841,12 +845,13 @@ void Evolution::loadIndividuals(int generation, std::string type)
     path_list = this->path + "experiments/" +
                 this->experiment_name +"/temp.txt";
   }
-  else
+  if(type == "archive")
   {
     // reads list of genomes in archive
     path_list = this->path+"experiments/" +
                 this->experiment_name + "/archive.txt";
   }
+
 
   std::ifstream listgenomes(path_list.c_str());
   std::string linegenome;
@@ -859,117 +864,132 @@ void Evolution::loadIndividuals(int generation, std::string type)
     std::string idgenome = "";
     std::string idparent1 = "";
     std::string idparent2 = "";
+    int aux_valid = 0;
 
-    if(type == "population")
+    std::vector< std::string > tokens;
+    std::cout<<" linegenome "<<linegenome<<std::endl;
+    if(type == "population" or type == "offspring")
     {
-      std::vector< std::string > tokens;
       boost::split(
           tokens,
           linegenome,
           boost::is_any_of("_."));
-      idgenome  = tokens[1];
-      idparent1 = tokens[3];
-      idparent2 = tokens[5];
+      if(tokens.size()>0)
+      {
+        if (tokens[0] == "body")
+        {
+          idgenome = tokens[1];
+          idparent1 = tokens[3];
+          idparent2 = tokens[5];
+          aux_valid = 1;
+        }
+      }
+
     }else
     {
-      std::vector< std::string > tokens;
       boost::split(
           tokens,
           linegenome,
           boost::is_any_of(" "));
-      idgenome  = tokens[0];
+      idgenome = tokens[0];
       idparent1 = tokens[1];
       idparent2 = tokens[2];
     }
 
-    Genome gen = Genome(idgenome, idparent1, idparent2);
-
-    // finds number of generation to which the genome belongs to
-    int generation_genome = this->getGeneration_genome(idgenome);
-
-    // reads the file with the genome
-    std::ifstream listalphabet(
-        this->path+"experiments/" + this->experiment_name + "/offspringpop" +
-        std::to_string(generation_genome) + "/genome" + idgenome +
-        ".txt");
-    std::string linealphabet;
-    // for each letter of the alphabet
-    while (getline(
-        listalphabet,
-        linealphabet))
+    if(aux_valid == 1)
     {
+        Genome gen = Genome(
+            idgenome,
+            idparent1,
+            idparent2);
 
-      // gets letter and production rule from file
-      std::vector< std::string > items;
-      boost::split(
-          items,
-          linealphabet,
-          boost::is_any_of(" "));
-      std::vector< std::string > items_rule(
-          items.begin() + 1,
-          items.begin() + items.size() -
-          1);
+        // finds number of generation to which the genome belongs to
+        int generation_genome = this->getGeneration_genome(idgenome);
 
-      // build a genetic-string with the production rule for the letter
-      auto lgs =  GeneticString();
-      lgs = gen.build_genetic_string(
-          lgs,
-          items_rule);
+        // reads the file with the genome
+        std::ifstream listalphabet(
+            this->path + "experiments/" + this->experiment_name +
+            "/offspringpop" +
+            std::to_string(generation_genome) + "/genome" + idgenome +
+            ".txt");
+        std::string linealphabet;
+        // for each letter of the alphabet
+        while (getline(
+            listalphabet,
+            linealphabet))
+        {
+          // gets letter and production rule from file
+          std::vector< std::string > items;
+          boost::split(
+              items,
+              linealphabet,
+              boost::is_any_of(" "));
+          std::vector< std::string > items_rule(
+              items.begin() + 1,
+              items.begin() + items.size() -
+              1);
 
-      // adds letter and its production rule (made a genetic-string) to the grammar of the genome
-      gen.addLetterGrammar(
-          items[0],
-          lgs);
+          // build a genetic-string with the production rule for the letter
+          auto lgs = GeneticString();
+          lgs = gen.build_genetic_string(
+              lgs,
+              items_rule);
 
-    }
+          // adds letter and its production rule (made a genetic-string) to the grammar of the genome
+          gen.addLetterGrammar(
+              items[0],
+              lgs);
 
-    // reads the measures of the genome
-    std::ifstream listmeasures(
-        this->path+"experiments/" + this->experiment_name + "/offspringpop" +
-        std::to_string(generation_genome) + "/measures" + idgenome +
-        ".txt");
-    std::string linemeasures;
-    // for each measure of the list
-    while (getline(
-        listmeasures,
-        linemeasures))
-    {
+        }
 
-      std::vector< std::string > tokens;
-      boost::split(
-          tokens,
-          linemeasures,
-          boost::is_any_of(":"));
+        // reads the measures of the genome
+        std::ifstream listmeasures(
+            this->path + "experiments/" + this->experiment_name +
+            "/offspringpop" +
+            std::to_string(generation_genome) + "/measures" + idgenome +
+            ".txt");
+        std::string linemeasures;
+        // for each measure of the list
+        while (getline(
+            listmeasures,
+            linemeasures))
+        {
 
-      gen.updateMeasure(
-          tokens[0],
-          std::stod(tokens[1]));
-    }
+          std::vector< std::string > tokens;
+          boost::split(
+              tokens,
+              linemeasures,
+              boost::is_any_of(":"));
 
-    // reads fitness of the genome
-    std::ifstream fitness(
-        this->path+"experiments/" + this->experiment_name + "/offspringpop" +
-        std::to_string(generation_genome) + "/fitness" + idgenome +
-        ".txt");
-    if (fitness.is_open())
-    {
-      std::string linefitness;
-      getline(
-          fitness,
-          linefitness);
-      gen.updateLocomotionFitness(std::stod(linefitness));
-    }
+          gen.updateMeasure(
+              tokens[0],
+              std::stod(tokens[1]));
+        }
 
+        // reads fitness of the genome
+        std::ifstream fitness(
+            this->path + "experiments/" + this->experiment_name +
+            "/offspringpop" +
+            std::to_string(generation_genome) + "/fitness" + idgenome +
+            ".txt");
+        if (fitness.is_open())
+        {
+          std::string linefitness;
+          getline(
+              fitness,
+              linefitness);
+          gen.updateLocomotionFitness(std::stod(linefitness));
+        }
 
-    if(type == "population")
-    {
-      // adds genome to the population
-      this->population.push_back(gen);
-    }else{
-      // adds genome to the archive
-      this->archive.push_back(gen);
-    }
+        if (type == "population")
+          this->population.push_back(gen);
 
+        if (type == "offspring")
+          this->offspring.push_back(gen);
+
+        if (type == "archive")
+          this->archive.push_back(gen);
+      }
   }
 
 };
@@ -999,18 +1019,41 @@ int Evolution::loadExperiment()
   // loads next_id from previous experiment
   this->next_id = std::stoi(this->readsEvolutionState()[2]);
 
-  // deletes possible remains of unfinished generation
-  std::string pathdir =
-      this->path+"experiments/" + this->experiment_name + "/selectedpop" +
-      std::to_string(gi + 1);
-  system(("exec rm -r " + pathdir).c_str());
-  pathdir = this->path+"experiments/" + this->experiment_name + "/offspringpop" +
-            std::to_string(gi + 1);
+  std::string aux = "";
+
+  // deletes possible remains of unfinished generation/iteration
+
+
+  if (li == -1)
+    aux = std::to_string(gi + 1);
+  else
+  {
+    if (li < this->params["learning_iterations"])
+      aux = std::to_string(gi) + "/learning" + std::to_string(li + 1);
+  }
+
+
+
+  std::string pathdir = this->path+"experiments/" + this->experiment_name + "/offspringpop" +aux;
   system(("exec rm -r " + pathdir).c_str());
 
 
-  // loads  population and archive
-  this->loadIndividuals(gi, "population");
+  // loads individuals arrays
+
+  if (gi>=2)
+  {
+    // if generation is complete, load selected population of it
+    if (li==-1)
+      this->loadIndividuals(gi, "population");
+    // otherwise, load selected population of previous generation andprevious offspring
+    else
+    {
+      this->loadIndividuals( gi - 1,"population");
+    }
+  }
+
+  this->loadIndividuals(gi, "offspring");
+
   this->loadIndividuals(0, "archive");
 
 
@@ -1054,7 +1097,7 @@ int Evolution::loadExperiment()
  * */
 void Evolution::saveLocomotionFitness(
     std::string genome_id,
-    double fitness, int learning_int)
+    double fitness, int learning_it)
 {
 
   // updates locomotion fitness for the genome
@@ -1070,11 +1113,11 @@ void Evolution::saveLocomotionFitness(
       this->path+"experiments/"
       + this->experiment_name +
       "/offspringpop" + std::to_string(generation_genome)+
-      "/learning" +std::to_string(learning_int)+
+      "/learning" +std::to_string(learning_it)+
       "/fitness"+this->offspring[index].getId()+".txt";
   file.open(path2);
 
-  if(learning_int == 0)
+  if(learning_it == 0)
   {
     this->offspring[index].updateLocomotionFitness(fitness);
     file << this->offspring[index].getLocomotionFitness();
@@ -1089,9 +1132,10 @@ void Evolution::saveLocomotionFitness(
 /**
  *  Performs the learning process with a 1+1 strategy.
  **/
-void Evolution::runExperiment_learn1(int generation, int learning_int)
+void Evolution::runExperiment_learn1(int generation,
+                                     int learning_it)
 {
-
+  std::cout<<"------------ learn " + std::to_string(learning_it) << std::endl;
   int argc = 1;
   char *argv[] = {"a"};
   LSystem LS;
@@ -1113,7 +1157,7 @@ void Evolution::runExperiment_learn1(int generation, int learning_int)
 
   this->aux.createFolder(this->path+"experiments/"+this->experiment_name +
                          "/offspringpop"+std::to_string(generation) +
-                         "/learning"+std::to_string(learning_int));
+                         "/learning"+std::to_string(learning_it));
 
   offspring_learn =  std::vector<Genome>();
   for (int i = 0; i < this->offspring.size(); i++)
@@ -1175,7 +1219,7 @@ void Evolution::runExperiment_learn1(int generation, int learning_int)
           this->offspring_learn[i].getGrammar()[mutate_letter].replace(pos, new_item);
 
           // log
-          this->aux.logs("local mutation: in "
+          this->aux.logs("learning mutation: in "
                          + this->offspring_learn[i].getId()
                          + " for " + mutate_letter
                          + " at " + std::to_string(pos)
@@ -1198,7 +1242,7 @@ void Evolution::runExperiment_learn1(int generation, int learning_int)
     if (mutate_letter == "C" and pos == 0) pos++;
 
 
-    this->aux.logs("local mutation: add brain change command "
+    this->aux.logs("learning mutation: add brain change command "
                    + com
                    + " in " + this->offspring_learn[i].getId()
                    + " for " + mutate_letter
@@ -1216,21 +1260,22 @@ void Evolution::runExperiment_learn1(int generation, int learning_int)
       argv,
       LS,
       generation,
-      learning_int,
+      learning_it,
       this->offspring_learn,
       this->experiment_name + "/offspringpop");
 
   // measures body phenotypes
   this->measureIndividuals(
       generation,
-      learning_int,
+      learning_it,
       this->offspring_learn,
       "/offspringpop");
 
 
 }
 
-void Evolution::runExperiment_learn2(int generation, int learning_int)
+void Evolution::runExperiment_learn2(int generation,
+                                     int learning_it)
 {
 
   for (int i = 0; i < this->offspring.size(); i++)
@@ -1241,7 +1286,7 @@ void Evolution::runExperiment_learn2(int generation, int learning_int)
     {
       std::vector< int > old = std::vector< int >();
       old.push_back(i);
-      this->cleanMemory(old);
+     // this->cleanMemory(old);
 
       this->offspring[i] = this->offspring_learn[i];
 
@@ -1249,17 +1294,17 @@ void Evolution::runExperiment_learn2(int generation, int learning_int)
       this->offspring[i].exportGenome(this->path+"experiments/" +
                       this->experiment_name+"/offspringpop"+ std::to_string(generation));
 
-      this->aux.logs(" learning for " + this->offspring[i].getId() +
-                      " iteration "+ std::to_string(learning_int));
+      this->aux.logs(" learning replacement: for " + this->offspring[i].getId() +
+                      " in iteration "+ std::to_string(learning_it));
 
     }
   }
 
+
   // saves the number of the last generation created/evaluated
   this->writesEvolutionState(
-      generation-1,
-      learning_int,
-      this->next_id);
+      generation,
+      learning_it);
 
 }
 
@@ -1397,7 +1442,9 @@ void Evolution::calculateFinalFitness()
 *  Evolution in the search for locomotion - part 1 of the process.
 **/
 void Evolution::runExperiment_evolve1(
-    int generation, int load_experiment)
+    int generation,
+    int load_experiment,
+    int learning_it)
 {
   int argc = 1;
   char *argv[] = {"a"};
@@ -1414,68 +1461,77 @@ void Evolution::runExperiment_evolve1(
       this->getParams(),
       this->path);
 
-  // loads alphabet with letters and commands
-  LSystem LS;
 
-  this->aux.logs("------------ generation " + std::to_string(generation) + " ------------");
-  this->logsTime("start gen");
-
-  this->aux.createFolder(this->path+"experiments/"+this->experiment_name +
-                         "/offspringpop"+std::to_string(generation));
-
-  this->aux.createFolder(this->path+"experiments/"+this->experiment_name +
-                         "/offspringpop"+std::to_string(generation) +
-                         "/learning0");
-
-  if(generation == 1)
+  if(learning_it == 0)
   {
-    this->createHeader();
 
-    // initializes population
-    this->initPopulation(LS);
-  }
-  else{
+    // loads alphabet with letters and commands
+    LSystem LS;
+
+    std::cout<<"------------ generation " + std::to_string(generation) << std::endl;
+    this->aux.logs("------------ generation " + std::to_string(generation) +  " ------------");
+    this->logsTime("start gen");
+
 
     this->aux.createFolder(
-        this->path+"experiments/"+this->experiment_name + "/selectedpop" + std::to_string(generation));
+        this->path + "experiments/" + this->experiment_name +
+        "/offspringpop" + std::to_string(generation));
 
-    this->offspring = std::vector< Genome >();
+    this->aux.createFolder(
+        this->path + "experiments/" + this->experiment_name +
+        "/offspringpop" + std::to_string(generation) +
+        "/learning0");
 
-    // creates offspring
-    this->crossover(LS);
+    if (generation == 1)
+    {
+      this->createHeader();
 
-    // mutates new individuals
-    this->mutation(LS);
+      // initializes population
+      this->initPopulation(LS);
+    }
+    else
+    {
 
-  }
+      this->offspring = std::vector< Genome >();
 
-  // develops genomes
-  this->developIndividuals(
-      argc,
-      argv,
-      LS,
-      generation,
-      0,
-      this->offspring,
-      this->experiment_name + "/offspringpop");
+      // creates offspring
+      this->crossover(LS);
 
-  // exports current-genome files
-  for (int i = 0; i < this->offspring.size(); i++)
-  {
+      // mutates new individuals
+      this->mutation(LS);
+
+    }
+
+    // develops genomes
+    this->developIndividuals(
+        argc,
+        argv,
+        LS,
+        generation,
+        0,
+        this->offspring,
+        this->experiment_name + "/offspringpop");
+
+    // exports current-genome files
+    for (int i = 0; i < this->offspring.size(); i++)
+    {
       this->offspring[i].exportGenome
-          (this->path+"experiments/"+this->experiment_name
-           + "/offspringpop" + std::to_string(generation));
+          (
+              this->path + "experiments/" + this->experiment_name
+              + "/offspringpop" + std::to_string(generation));
+    }
+
+    // measures body phenotypes
+    this->measureIndividuals(
+        generation,
+        0,
+        this->offspring,
+        "/offspringpop");
+
+    // updates list of validit of phenotype
+    this->savesValidity(generation);
+
   }
-
-  // measures body phenotypes
-  this->measureIndividuals(
-      generation,
-      0,
-      this->offspring,
-      "/offspringpop");
-
-  // updates list of validit of phenotype
-  this->savesValidity(generation);
 
 }
 
@@ -1484,7 +1540,7 @@ void Evolution::runExperiment_evolve1(
 *  Evolution in the search for locomotion - part 2 of the process. After
  *  fitness evaluation.
 **/
-void Evolution::runExperiment_evolve2(int generation, int learning_int)
+void Evolution::runExperiment_evolve2(int generation, int learning_it)
 {
 
   // adds new individuals to population
@@ -1509,6 +1565,10 @@ void Evolution::runExperiment_evolve2(int generation, int learning_int)
     // selects individuals, keeping the population with a fixed size
     this->selection();
 
+    this->aux.createFolder(
+        this->path + "experiments/" + this->experiment_name + "/selectedpop" +
+        std::to_string(generation));
+    
     // saves phenotypes of the selected population to a separated folder (only for visualization issues)
     this->exportPop(generation);
   }
@@ -1526,8 +1586,7 @@ void Evolution::runExperiment_evolve2(int generation, int learning_int)
   // saves the number of the last generation created/evaluated
   this->writesEvolutionState(
       generation,
-      learning_int,
-      this->next_id);
+      learning_it);
 
   this->logsTime("end gen");
 }
@@ -1602,15 +1661,14 @@ void Evolution::logsTime(std::string moment)
  * */
 void Evolution::writesEvolutionState(
     int generation,
-    int learning,
-    int next_id)
+    int learning)
 {
 
   std::ofstream logs_file;
   std::string path = this->path+"experiments/" + this->experiment_name +
                      "/evolutionstate.txt";
   logs_file.open(path);
-  logs_file << generation << " " << learning << " " << next_id;
+  logs_file << generation << " " << learning << " " << this->next_id;
   logs_file.close();
 }
 
