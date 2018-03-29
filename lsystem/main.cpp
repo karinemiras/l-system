@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
       int ini = 1;
     /* test setup */
 
-    for(int i=ini; i <= 2; i++)
+    for(int i=ini; i <= evolve_generation.getParams()["num_generations"]; i++)
     {
         evolve_generation.runExperiment_part1(i, load_generation);
         evolve_generation.runExperiment_part2(i);

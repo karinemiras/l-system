@@ -54,6 +54,8 @@ void LSystem::build_brainmove_commands(){
     brainmove_commands.push_back("brainmoveTTP");
     // change 'to' of current-edge to sibling of current-to
     brainmove_commands.push_back("brainmoveTTS");
+    // invert 'from' with 'to'
+    brainmove_commands.push_back("brainmoveInv");
 }
 
 /**
@@ -160,6 +162,9 @@ std::string LSystem::buildBrainCommand(std::string braincommand)
     if(braincommand == "brainperturb")
         braincommand += "_"+std::to_string(weight_nor(generator));
 
+    if(braincommand == "brainmoveInv")
+      braincommand += "_"+std::to_string(weight_nor(generator));
+
     // its more likely that a node has a number of conn close to 1
 
     if(   braincommand == "brainmoveFTC"
@@ -185,6 +190,8 @@ std::string LSystem::buildBrainCommand(std::string braincommand)
         braincommand += "_"+std::to_string(intermediate)
                         +"|"+std::to_string(sibling);
     }
+
+
 
     return braincommand;
 

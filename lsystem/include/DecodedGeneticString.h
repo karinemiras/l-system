@@ -125,12 +125,10 @@ private:
     // pointers to current-edge of brain graph:
 
     //  'from' node(s) in current-edge
-    std::vector<Vertex2 *> fromNode =
-        std::vector<Vertex2 *>();
+    std::vector<Vertex2 *> fromNode = std::vector<Vertex2 *>();
 
     //  'to' node(s) in current-edge
-    std::vector<Vertex2 *> toNode =
-        std::vector<Vertex2 *>();
+    Vertex2 * toNode = nullptr;
 
     int ids; // count of ids so far
 };
