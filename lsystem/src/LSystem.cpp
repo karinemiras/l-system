@@ -102,9 +102,6 @@ void LSystem::build_alphabet(){
     alphabet_index.push_back("ST");
     alphabet_type["ST"] = "sensor";
 
-    //alphabet["SL"] = "SL";   // light sensor
-    //alphabet_index.push_back("SL");
-    //alphabet_type["SL"] = "sensor";
 
 }
 
@@ -163,7 +160,7 @@ std::string LSystem::buildBrainCommand(std::string braincommand)
         braincommand += "_"+std::to_string(weight_nor(generator));
 
     if(braincommand == "brainmoveInv")
-      braincommand += "_"+std::to_string(weight_nor(generator));
+      braincommand += "_"+std::to_string(weight_uni(generator));
 
     // its more likely that a node has a number of conn close to 1
 

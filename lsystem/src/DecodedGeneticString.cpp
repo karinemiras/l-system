@@ -534,7 +534,7 @@ void DecodedGeneticString::decodeBrainCommand(std::string item,
               auto edge = std::make_pair(
                   this->fromNode[0]->id,
                   this->toNode->id);
-              
+
               // if there is no connection, creates edge
               if (this->brain_edges.count(edge) == 0)
               {
