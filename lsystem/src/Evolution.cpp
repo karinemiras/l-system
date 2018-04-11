@@ -1129,8 +1129,8 @@ void Evolution::calculateFinalFitness()
     this->population[i].updateRankFitness();
     double fitness =
          this->population[i].getRankFitness()
-         *
-         this->population[i].getNoveltyFitness()
+         //*
+         //this->population[i].getNoveltyFitness()
     ;
 
     this->population[i].updateFinalFitness(fitness);
