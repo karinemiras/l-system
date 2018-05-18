@@ -537,6 +537,68 @@ int Evolution::tournament()
 }
 
 
+int Evolution::tournament_multi()
+{
+
+  std::random_device rd;
+  std::default_random_engine generator(rd());
+  std::uniform_int_distribution< int > dist_1(0,
+      (int) this->population.size() - 1); // size of current pop (parents+offspring)
+
+  int genome1 = -1; // random genome 1
+  int genome2 = -1; // random genome 2
+  int dominant = -1;
+  int attempts = 0;
+
+
+  while( dominant == -1 and attempts <= this->getParams()["max_attempt_multi"] )
+  {
+
+    genome1 = dist_1(generator);
+    genome2 = dist_1(generator);
+
+    attempts = attempts + 1;
+
+    // genome1 dominates
+    if (this->population[genome1].getBalanceFitness() >= this->population[genome2].getBalanceFitness()
+        and
+        this->population[genome1].getLocomotionFitness() >= this->population[genome2].getLocomotionFitness()
+        and
+        this->population[genome1].getNoveltyFitness() >= this->population[genome2].getNoveltyFitness()
+        and
+          (
+              this->population[genome1].getBalanceFitness() > this->population[genome2].getBalanceFitness()
+              or
+              this->population[genome1].getLocomotionFitness() > this->population[genome2].getLocomotionFitness()
+              or
+              this->population[genome1].getNoveltyFitness() > this->population[genome2].getNoveltyFitness()
+          )
+        ) dominant = genome1;
+
+    // genome2 dominates
+    if (this->population[genome2].getBalanceFitness() >= this->population[genome1].getBalanceFitness()
+        and
+        this->population[genome2].getLocomotionFitness() >= this->population[genome1].getLocomotionFitness()
+        and
+        this->population[genome2].getNoveltyFitness() >= this->population[genome1].getNoveltyFitness()
+        and
+        (
+            this->population[genome2].getBalanceFitness() > this->population[genome1].getBalanceFitness()
+            or
+            this->population[genome2].getLocomotionFitness() > this->population[genome1].getLocomotionFitness()
+            or
+            this->population[genome2].getNoveltyFitness() > this->population[genome1].getNoveltyFitness()
+        )
+        ) dominant = genome2;
+  }
+
+  // if no dominent was foujd, chooses the first (random)
+  if(dominant == -1) dominant = genome1;
+
+  return dominant;
+
+}
+
 /**
 *  Selection of genomes in a population.
 **/
@@ -551,7 +613,7 @@ void Evolution::selection()
        i < this->params["pop_size"];
        i++)
   {
-    int genome = this->tournament(); // selects one genome by tournament
+    int genome = this->tournament_multi(); // selects one genome by tournament
 
     // makes sure that the same genome wont be selected more than once
     while (std::find(
@@ -559,7 +621,7 @@ void Evolution::selection()
         index_selected.end(),
         genome) != index_selected.end())
     {
-      genome = this->tournament();
+      genome = this->tournament_multi();
     }
     selected.push_back(this->population[genome]);
     index_selected.push_back(genome);

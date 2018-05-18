@@ -57,6 +57,7 @@ public:
     void savesValidity(int generation);
 
     int  tournament();
+    int  tournament_multi();
     void selection();
     std::vector<Genome>  getPopulation();
     std::map<std::string, double> getParams();

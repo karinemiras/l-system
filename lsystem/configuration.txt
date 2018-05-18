@@ -1,4 +1,4 @@
-pop_size 2
+pop_size 100
 num_generations 100
 k_neighbors 1
 mutation_prob 1
@@ -15,3 +15,4 @@ export_phenotypes 1
 export_genomes 1
 size_component 40
 spacing 1
+max_attempt_multi 10
