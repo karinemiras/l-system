@@ -19,7 +19,8 @@ endif ()
 
 if (${APPLE})
     set(PYTHON_INCLUDE_DIRS ${PYTHON_INCLUDE_DIRS} "/usr/include/python2.7")
-    set(Python_LIBRARIES ${Python_LIBRARIES} "/usr/local/var/homebrew/linked/python/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib")
+   # set(Python_LIBRARIES ${Python_LIBRARIES} "/usr/local/var/homebrew/linked/python/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib")
+    set(Python_LIBRARIES ${Python_LIBRARIES} "/usr/local/Cellar/python@2/2.7.15/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib")
 endif ()
 
 # includes

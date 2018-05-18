@@ -254,7 +254,7 @@ void EvolutionIndirect::mutation(
         }
 
         this->offspring[i].getGrammar()[mutate_letter].swap(pos_swap1,
-                                                       pos_swap2); // removes item from chosen position
+                                                            pos_swap2); // removes item from chosen position
         this->aux.logs("mutation: swap in " + this->offspring[i].getId() + " for " +
                        mutate_letter
                        + " between " + std::to_string(pos_swap1) + " and " +
@@ -349,7 +349,7 @@ void EvolutionIndirect::mutation(
 
         //  (possibly) alters genetic-string (production rule) adding items (letters or commands)
         this->offspring[i].getGrammar()[mutate_letter].add(pos_insertion,
-                                                      genetic_string_item);
+                                                           genetic_string_item);
       }
     }
   }

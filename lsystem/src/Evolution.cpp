@@ -413,7 +413,7 @@ void Evolution::createHeader()
       this->path+"experiments/" + this->experiment_name + "/history.txt";
   file.open(path);
   file
-      << "generation idgenome noveltyfit locofit finalfit rankfit idparent1 "
+      << "generation idgenome noveltyfit locofit finalfit balfit idparent1 "
           "idparent2 "
       << std::endl;
   file.close();
@@ -423,7 +423,7 @@ void Evolution::createHeader()
   file
       << "generation idbest_nov maxfit_nov meanfit_nov idbest_loco "
           "maxfit_loco meanfit_loco idbest_fin maxfit_fin meanfit_fin "
-          "idbest_rank maxfit_rank meanfit_rank "
+          "idbest_bal maxfit_bal meanfit_bal "
           "nichecoverage_generation nichecoverage_accumulated";
   file << std::endl;
   file.close();
@@ -474,7 +474,7 @@ void Evolution::saveHistory(int generation)
                  << this->population[i].getNoveltyFitness() << " "
                  << this->population[i].getLocomotionFitness() << " "
                  << this->population[i].getFinalFitness() << " "
-                 << this->population[i].getRankFitness() << " "
+                 << this->population[i].getBalanceFitness() << " "
                  << this->population[i].getId_parent1() << " "  // id of parent1
                  << this->population[i].getId_parent2() << " " // id of parent2
                  << std::endl;
@@ -678,7 +678,7 @@ void Evolution::exportGenerationMetrics(
       if(f==2)
         fitness = this->getPopulation()[i].getFinalFitness();
       if(f==3)
-        fitness = this->getPopulation()[i].getRankFitness();
+        fitness = this->getPopulation()[i].getBalanceFitness();
 
       // finds the maximum/best fitness of the population
       if (fitness > maximum_fitness)
@@ -884,7 +884,7 @@ void Evolution::loadIndividuals(int generation, std::string type)
     // reads fitness of the genome
     std::ifstream fitness(
         this->path+"experiments/" + this->experiment_name + "/offspringpop" +
-        std::to_string(generation_genome) + "/fitness" + idgenome +
+        std::to_string(generation_genome) + "/fitness_" + idgenome +
         ".txt");
     if (fitness.is_open())
     {
@@ -893,6 +893,19 @@ void Evolution::loadIndividuals(int generation, std::string type)
           fitness,
           linefitness);
       gen.updateLocomotionFitness(std::stod(linefitness));
+    }
+
+    std::ifstream fitness2(
+        this->path+"experiments/" + this->experiment_name + "/offspringpop" +
+        std::to_string(generation_genome) + "/fitness2_" + idgenome +
+        ".txt");
+    if (fitness2.is_open())
+    {
+      std::string linefitness;
+      getline(
+          fitness2,
+          linefitness);
+      gen.updateBalanceFitness(std::stod(linefitness));
     }
 
 
@@ -1001,10 +1014,39 @@ void Evolution::saveLocomotionFitness(
   std::string path2 =
       this->path+"experiments/"
       + this->experiment_name + "/offspringpop" +
-      std::to_string(generation_genome)+ "/fitness"+this->offspring[index].getId()+".txt";
+      std::to_string(generation_genome)+ "/fitness_"+this->offspring[index]
+          .getId()+".txt";
   file.open(path2);
   file
       <<  this->offspring[index].getLocomotionFitness();
+  file.close();
+}
+
+/* Saves the fitness for genome.
+ * */
+void Evolution::saveBalanceFitness(
+    std::string genome_id,
+    double fitness)
+{
+
+  // updates balance fitness for the genome
+  int index=0;
+  while(this->offspring[index].getId() != genome_id)
+    index++;
+  this->offspring[index].updateBalanceFitness(fitness);
+
+  int generation_genome = this->getGeneration_genome(this->offspring[index].getId());
+
+  // exports fitness for recovery
+  std::ofstream file;
+  std::string path2 =
+      this->path+"experiments/"
+      + this->experiment_name + "/offspringpop" +
+      std::to_string(generation_genome)+ "/fitness2_"+this->offspring[index]
+          .getId()+".txt";
+  file.open(path2);
+  file
+      <<  this->offspring[index].getBalanceFitness();
   file.close();
 }
 
@@ -1126,11 +1168,12 @@ void Evolution::calculateFinalFitness()
   for (int i = 0; i < this->population.size(); i++)
   {
 
-    this->population[i].updateRankFitness();
     double fitness =
-         this->population[i].getRankFitness()
-         //*
-         //this->population[i].getNoveltyFitness()
+         this->population[i].getLocomotionFitness()
+         *
+         this->population[i].getBalanceFitness()
+         *
+         this->population[i].getNoveltyFitness()
     ;
 
     this->population[i].updateFinalFitness(fitness);

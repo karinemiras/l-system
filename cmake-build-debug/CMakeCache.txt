@@ -859,7 +859,7 @@ lsystem_proto_SOURCE_DIR:STATIC=/Users/karinemiras/projects/coevolution-revolve/
 lsystem_proto_lib_LIB_DEPENDS:STATIC=general;Qt4::QtGui;general;mlpack;general;armadillo;general;yaml-cpp;
 
 //Dependencies for the target
-lsystem_python_LIB_DEPENDS:STATIC=general;lsystem_proto_lib;general;/usr/local/lib/libboost_system-mt.dylib;general;/usr/local/lib/libboost_python.dylib;general;/usr/local/var/homebrew/linked/python/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib;
+lsystem_python_LIB_DEPENDS:STATIC=general;lsystem_proto_lib;general;/usr/local/lib/libboost_system-mt.dylib;general;/usr/local/lib/libboost_python.dylib;general;/usr/local/Cellar/python@2/2.7.15/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib;
 
 //Dependencies for target
 lsystem_static_LIB_DEPENDS:STATIC=

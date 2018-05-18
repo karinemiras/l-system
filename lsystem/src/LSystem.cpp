@@ -82,25 +82,26 @@ void LSystem::build_brainchange_commands(){
 void LSystem::build_alphabet(){
 
 
-    alphabet["C"]  = "C";  // core component
-    alphabet_index.push_back("C");
-    alphabet_type["C"] = "body";
+  alphabet["C"]  = "C";  // core component
+  alphabet_index.push_back("C");
+  alphabet_type["C"] = "body";
 
-    alphabet["AJ1"] = "AJ1";     // active joint - horizontal (0 degrees)
-    alphabet_index.push_back("AJ1");
-    alphabet_type["AJ1"] = "body";
+  alphabet["AJ1"] = "AJ1";     // active joint - horizontal (0 degrees)
+  alphabet_index.push_back("AJ1");
+  alphabet_type["AJ1"] = "body";
 
-    alphabet["AJ2"] = "AJ2";     // active joint - vertical (90 degrees)
-    alphabet_index.push_back("AJ2");
-    alphabet_type["AJ2"] = "body";
+  alphabet["AJ2"] = "AJ2";     // active joint - vertical (90 degrees)
+  alphabet_index.push_back("AJ2");
+  alphabet_type["AJ2"] = "body";
 
-    alphabet["B"] = "B";   // brick
-    alphabet_index.push_back("B");
-    alphabet_type["B"] = "body";
+  alphabet["B"] = "B";   // brick
+  alphabet_index.push_back("B");
+  alphabet_type["B"] = "body";
 
-    alphabet["ST"] = "ST";   // touch  sensor
-    alphabet_index.push_back("ST");
-    alphabet_type["ST"] = "sensor";
+  alphabet["ST"] = "ST";   // touch  sensor
+  alphabet_index.push_back("ST");
+  alphabet_type["ST"] = "sensor";
+
 
 
 }

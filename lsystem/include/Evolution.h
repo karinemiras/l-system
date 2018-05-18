@@ -65,6 +65,7 @@ public:
     void exportGenerationMetrics(int generation,
                                  std::vector<int> metrics);
     void saveLocomotionFitness(std::string genome_id, double fitness);
+    void saveBalanceFitness(std::string genome_id, double fitness);
     void exportPop(int generation);
     void calculateNovelty();
     void calculateFinalFitness();

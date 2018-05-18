@@ -114,13 +114,13 @@ public:
 
     void updateMeasure(std::string key, double value);
 
+    double getBalanceFitness();
+
     double getLocomotionFitness();
 
     double getNoveltyFitness();
 
     double getFinalFitness();
-
-    double getRankFitness();
 
     std::map< std::string, GeneticString  > getGrammar();
 
@@ -128,13 +128,14 @@ public:
 
     void removeMeasure(std::string key);
 
+    void updateBalanceFitness(double fitness);
+
     void updateLocomotionFitness(double fitness);
 
     void updateNoveltyFitness(double fitness);
 
     void updateFinalFitness(double fitness);
 
-    void updateRankFitness();
 
     void addLetterGrammar(std::string letter,
                           GeneticString  lgs);
@@ -167,11 +168,12 @@ protected:
 
     double locomotion_fitness = 0;
 
+    double balance_fitness = 0;
+
     double novelty_fitness = 0;
 
     double final_fitness = 0;
 
-    double rank_fitness = 0;
 
     int valid = 1; // valid 1=yes, 0=no
 

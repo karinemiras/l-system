@@ -100,9 +100,9 @@ double Genome::getFinalFitness()
   return this->final_fitness;
 }
 
-double Genome::getRankFitness()
+double Genome::getBalanceFitness()
 {
-  return this->rank_fitness;
+  return this->balance_fitness;
 }
 
 /**
@@ -206,6 +206,7 @@ void Genome::build_grammar(
         lgs);
   }
 }
+
 
 
 /**
@@ -1230,12 +1231,10 @@ void Genome::updateFinalFitness(double fitness)
   this->final_fitness = fitness;
 }
 
-void Genome::updateRankFitness()
+void Genome::updateBalanceFitness(double fitness)
 {
 
-  this->rank_fitness =
-      this->locomotion_fitness
-   ;
+  this->balance_fitness = fitness;
 }
 
 std::map< std::string, GeneticString  > Genome::getGrammar()

@@ -93,7 +93,7 @@ lib/lsystem_python.so: lsystem/python/CMakeFiles/lsystem_python.dir/build.make
 lib/lsystem_python.so: lib/liblsystem_proto_lib.a
 lib/lsystem_python.so: /usr/local/lib/libboost_system-mt.dylib
 lib/lsystem_python.so: /usr/local/lib/libboost_python.dylib
-lib/lsystem_python.so: /usr/local/var/homebrew/linked/python/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib
+lib/lsystem_python.so: /usr/local/Cellar/python@2/2.7.15/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib
 lib/lsystem_python.so: /usr/local/lib/QtGui.framework/QtGui
 lib/lsystem_python.so: /usr/local/lib/QtCore.framework/QtCore
 lib/lsystem_python.so: lsystem/python/CMakeFiles/lsystem_python.dir/link.txt
