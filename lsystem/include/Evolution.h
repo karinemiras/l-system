@@ -58,6 +58,8 @@ public:
 
     int  tournament();
     int  tournament_multi();
+    int  tournament_multi_1();
+    int  tournament_multi_2();
     void selection();
     std::vector<Genome>  getPopulation();
     std::map<std::string, double> getParams();

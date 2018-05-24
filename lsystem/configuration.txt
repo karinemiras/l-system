@@ -15,4 +15,5 @@ export_phenotypes 1
 export_genomes 1
 size_component 40
 spacing 1
-max_attempt_multi 10
+max_attempt_multi 100
+objective 1

@@ -69,12 +69,22 @@ void EvolutionIndirect::crossover(
   {
 
     // selects parents for the crossover, according to INDEX
-    int parent1 = this->tournament();
+    int parent1 = -1;
+
+    if (this->params["objective"] == 0)
+      parent1 = this->tournament();
+    else
+      parent1 = this->tournament_multi();
+
     int parent2 = parent1;
 
     while (parent2 == parent1)
     { // makes sure that parent2 is different from parent1
-      parent2 = this->tournament();
+
+      if (this->params["objective"] == 0)
+        parent2 = this->tournament();
+      else
+        parent2 = this->tournament_multi();
     }
 
     // #TEST: Tests if selected parents are different.
